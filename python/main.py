@@ -184,6 +184,8 @@ def main():
                 filename=mmproj_target_file,
             )
             info(f"mmproj for model has succesfully downloaded, file downloaded to: {mmproj_file_path}")
+        else:
+            mmproj_file_path = ""
         log(f"Creating json entry for model {model_target_file}")
         models_dir_path = Path(f"{GEKOKU_HOME}/models")
         if not models_dir_path.is_dir():
