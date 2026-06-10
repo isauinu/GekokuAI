@@ -144,6 +144,12 @@ verifying_setup() {
 }
 
 compile_environment() {
+    #get script source
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    source_dir="${script_dir}/python"
+    dest_dir="${GEKOKU_HOME}/app"
+    log "SCRIPT DIR: $script_dir"
+    log "SOURCE DIR: $source_dir"
     #Setup workspace
     log -i "Creating workspace"
     mkdir -p "$GEKOKU_HOME"
@@ -236,9 +242,6 @@ llama_cpp_path = "$GEKOKU_HOME/llama.cpp"
 EOF
     log -s "Successfully created config file at $config_file"
     log -i "Installing Gekoku to local user"
-    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source_dir="${script_dir}/python"
-    dest_dir="${GEKOKU_HOME}/app"
     if [ ! -d "$source_dir" ]; then
         log -f "Source directory doesn't exist, make sure the directory exist to complete setup..." 
         exit 1
@@ -255,7 +258,7 @@ EOF
     chmod +x "$gekoku_file"
     echo
     log -i "Add the following to your shell:"
-    printf "export PATH="$HOME/.gekokuai/bin:$PATH""
+    printf 'export PATH="$HOME/.gekokuai/bin:$PATH"'
     echo
     log -s "gekoku command created"
     sleep 1
