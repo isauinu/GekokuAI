@@ -12,7 +12,12 @@ currently supports all linux distro that uses APT, pacman, and DNF as its packag
 - `./setup.sh`
 
 Additionally depending on your shell export the following into your shell environment, example:
+
 `echo 'export PATH="$HOME/.gekokuai/bin:$PATH"' >> ~/.bashrc`
+
+and then refresh tour shell environment, example
+
+`source ~/.bashrc`
 
 ## Commands
 - gekoku serve [MODEL]
