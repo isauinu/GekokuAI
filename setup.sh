@@ -38,7 +38,7 @@ declare -A APT_DEPS=(
     ["gcc"]="gcc" 
     ["g++"]="g++" 
     ["python3"]="python-is-python3"
-    ["python3"]="python3-venv" 
+    ["python3"]="python3-venv"
     ["curl"]="curl" 
     ["tar"]="tar" 
     ["pip"]="pip" 
@@ -294,6 +294,7 @@ install_missing_dependencies() {
     done
     log "Packages to install: ${packages_to_install[*]}"
     if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
+        packages_to_install+=("python3-venv")
         sudo apt-get update
         sudo apt-get install -y "${packages_to_install[@]}"
     elif [ "$PACKAGE_MANAGER" == "pacman" ]; then

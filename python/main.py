@@ -166,7 +166,7 @@ def main():
         if model_target_file == None:
             fatal(f"Couldn't find requested quantization model in {args.pull_model} repo")
 
-        log(f"Model file: {model_target_file}, mmproj: {mmproj_target_file or ""}")
+        log(f"Model file: {model_target_file}, mmproj: {mmproj_target_file or ''}")
         log(f"Downloading file: {model_target_file}")
         model_file_path = hf_hub_download(
             repo_id=args.pull_model,
@@ -180,9 +180,7 @@ def main():
                 repo_id=args.pull_model,
                 filename=mmproj_target_file,
             )
-            info(f"mmproj for model has succesfully downloaded, file downloaded to: {mmproj_file_path}")      
-        else:
-            mmproj_file_path = ""
+            info(f"mmproj for model has succesfully downloaded, file downloaded to: {mmproj_file_path}")
         log(f"Creating json entry for model {model_target_file}")
         models_dir_path = Path(f"{GEKOKU_HOME}/models")
         if not models_dir_path.is_dir():
@@ -195,7 +193,7 @@ def main():
                 "repo": args.pull_model,
                 "file": model_target_file,
                 "path": model_file_path,
-                "mmproj_path": mmproj_file_path or ""
+                "mmproj_path": mmproj_file_path or ''
             },
             "arguments": {
                 "llama_args": ""
