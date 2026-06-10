@@ -294,14 +294,14 @@ install_missing_dependencies() {
     done
     log "Packages to install: ${packages_to_install[*]}"
     if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
-        apt-get update
-        apt-get install -y "${packages_to_install[@]}"
+        sudo apt-get update
+        sudo apt-get install -y "${packages_to_install[@]}"
     elif [ "$PACKAGE_MANAGER" == "pacman" ]; then
-        pacman -Sy
-        pacman -S "${packages_to_install[@]}" --noconfirm
+        sudo pacman -Sy
+        sudo pacman -S "${packages_to_install[@]}" --noconfirm
     elif [ "$PACKAGE_MANAGER" == "dnf" ]; then
-        dnf update
-        dnf install -y "${packages_to_install[@]}"
+        sudo dnf update
+        sudo dnf install -y "${packages_to_install[@]}"
     fi
     log -s "Missing dependencies are installed"
     log -i "re-checking any failed install"
