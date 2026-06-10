@@ -11,6 +11,9 @@ currently supports all linux distro that uses APT, pacman, and DNF as its packag
 - `chmod +x setup.sh`
 - `./setup.sh`
 
+Additionally depending on your shell export the following into your shell environment, example:
+`echo 'export PATH="$HOME/.gekokuai/bin:$PATH"' >> ~/.bashrc`
+
 ## Commands
 - gekoku serve [MODEL]
 - gekoku pull [REPO]
