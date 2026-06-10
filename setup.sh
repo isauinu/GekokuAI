@@ -252,13 +252,14 @@ EOF
     log -i "Creating gekoku command"
     local gekoku_file="$GEKOKU_HOME/bin/gekoku"
     cat << EOF > "$gekoku_file"
-~/.gekokuai/venv/bin/python
+#!/usr/bin/env bash
 exec "$GEKOKU_HOME/venv/bin/python" "$GEKOKU_HOME/app/main.py" "\$@"
 EOF
     chmod +x "$gekoku_file"
     echo
-    log -i "Add the following to your shell:"
-    printf 'export PATH="$HOME/.gekokuai/bin:$PATH"'
+    printf "\e[36mAdd the following to your shell:\e[0m "
+    printf '\e[36mexport PATH="$HOME/.gekokuai/bin:$PATH"\e[0m'
+    echo
     echo
     log -s "gekoku command created"
     sleep 1
