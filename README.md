@@ -15,7 +15,7 @@ Additionally depending on your shell export the following into your shell enviro
 
 `echo 'export PATH="$HOME/.gekokuai/bin:$PATH"' >> ~/.bashrc`
 
-and then refresh tour shell environment, example
+and then refresh your shell environment, example
 
 `source ~/.bashrc`
 
