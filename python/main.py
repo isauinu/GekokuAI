@@ -9,7 +9,10 @@ if sys.executable != VENV_PYTHON:
 
 #Actual part of the code here
 import argparse
-import tomllib
+try:
+    import tomlib
+except ImportError:
+    import tomli as tomlib
 import tomli_w
 from modules.logger import *
 import subprocess

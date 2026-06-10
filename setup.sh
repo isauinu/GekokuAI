@@ -27,7 +27,7 @@ PACKAGE_MANAGER=""
 #Requirements (Update these for any changes in the future)
 REQUIRED_CPU_FLAGS=("sse4_1" "sse4_2")
 RECOMMENDED_CPU_FLAGS=("avx" "avx2" "fma")
-REQUIRED_PIP_PACKAGES=("pip" " setuptools" " wheel" "huggingface_hub" "tomli-w")
+REQUIRED_PIP_PACKAGES=("pip" " setuptools" " wheel" "huggingface_hub" "tomli" "tomli-w")
 OPTIONAL_CPU_FLAGS=("avx512f" "avx512bw" "avx512vl" "avx512vnni" "amx_int8" "amx_bf16")
 SUPPORTED_ROCM_ARCH=("gfx906" "gfx908" "gfx90a" "gfx1030" "gfx1100" "gfx1101" "gfx1102")
 REQUIRED_DEPENDENCIES=("git" "cmake" "make" "gcc" "g++" "python3" "curl" "tar" "pip" "zip" "pkg-config" "node" "npm")
@@ -38,7 +38,6 @@ declare -A APT_DEPS=(
     ["gcc"]="gcc" 
     ["g++"]="g++" 
     ["python3"]="python-is-python3"
-    ["python3"]="python3-venv"
     ["curl"]="curl" 
     ["tar"]="tar" 
     ["pip"]="pip" 
