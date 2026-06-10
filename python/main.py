@@ -25,7 +25,7 @@ version = "Alpha 0.1"
 
 HOME = os.getenv('HOME')
 with open(f"{HOME}/.gekokuai/config/config.toml", "rb") as f:
-    config = tomllib.load(f)
+    config = tomlib.load(f)
 
 GEKOKU_HOME = config["location"]["workspace"]
 
@@ -216,7 +216,7 @@ def main():
                     model_toml_path = file
         
         with open(model_toml_path, "rb") as f:
-            model_config = tomllib.load(f)
+            model_config = tomlib.load(f)
         
         model_path = model_config["metadata"]["path"]
         model_mmproj_path = model_config["metadata"]["mmproj_path"]
@@ -289,7 +289,7 @@ def main():
             with open (runtime_file_path, "wb") as toml_file:
                 tomli_w.dump(runtime_data, toml_file)
         with open(runtime_file_path, "rb") as f:
-            runtime_file = tomllib.load(f)
+            runtime_file = tomlib.load(f)
         status_running = runtime_file["server"]["running"]
         status_pid = runtime_file["server"]["pid"]
         status_model = runtime_file["server"]["model"]
@@ -315,7 +315,7 @@ def main():
             with open (runtime_file_path, "wb") as toml_file:
                 tomli_w.dump(runtime_data, toml_file)
         with open(runtime_file_path, "rb") as f:
-            runtime_file = tomllib.load(f)
+            runtime_file = tomlib.load(f)
         status_pid = runtime_file["server"]["pid"]
         if status_pid != 0:
             os.kill(status_pid, signal.SIGTERM)
@@ -329,7 +329,7 @@ def main():
         for file in models_dir_path.iterdir():
             model_file_path = models_dir_path / file
             with open(model_file_path, "rb") as f:
-                model_info = tomllib.load(f)
+                model_info = tomlib.load(f)
             model_id_info = model_info["id"]
             model_repo_info = model_info["metadata"]["repo"]
             model_path_info = model_info["metadata"]["path"]
@@ -341,7 +341,7 @@ def main():
             log(f"Removing {args.remove_model} from shelf...")
             model_info_path = Path(f"{GEKOKU_HOME}/models/{args.remove_model}.toml")
             with open(model_info_path, "rb") as f:
-                model_info = tomllib.load(f)
+                model_info = tomlib.load(f)
             model_file_path = Path(model_info["metadata"]["path"])
             mmproj_file_path = Path(model_info["metadata"]["mmproj_path"])
             log(f"Removing model file, Path: {model_file_path}")

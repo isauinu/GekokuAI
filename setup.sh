@@ -211,8 +211,14 @@ compile_environment() {
     #Downloading needed python pip packages
     log -i "Installing pip packages"
     source "$GEKOKU_HOME/venv/bin/activate"
+    log "Python: $(which python)"
+    log "Python version: $(python --version)"
+    log "PIP: $(which pip)"
+    log "PIP version: $(pip --version)"
     python -m pip install --upgrade pip
+    log "Installing ${REQUIRED_PIP_PACKAGES[@]}"
     pip install -U "${REQUIRED_PIP_PACKAGES[@]}"
+    log "Exit code: $?"
     log -s "All needed packages are installed"
     sleep 0.3
 
@@ -293,9 +299,8 @@ install_missing_dependencies() {
     done
     log "Packages to install: ${packages_to_install[*]}"
     if [ "$PACKAGE_MANAGER" == "apt-get" ]; then
-        packages_to_install+=("python3-venv")
         sudo apt-get update
-        sudo apt-get install -y "${packages_to_install[@]}"
+        sudo apt-get install -y "${packages_to_install[@]}" python3-venv
     elif [ "$PACKAGE_MANAGER" == "pacman" ]; then
         sudo pacman -Sy
         sudo pacman -S "${packages_to_install[@]}" --noconfirm
