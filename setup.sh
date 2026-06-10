@@ -434,12 +434,17 @@ check_system() {
         log -i "Using GPU: $GPU_NAME"
         if command -v nvidia-smi >/dev/null 2>&1; then
             GPU_DRIVER_VERSION=$(nvidia-smi --query-gpu=driver_version --format=csv,noheader)
-            log -i
+            log -i "Driver version: $GPU_DRIVER_VERSION"
             if echo "$GPU_NAME" | grep -qiE "GeForce (210|310|610|GT 710|GT 730)|NVS"; then
                 log -w "Detected GPU lacks CUDA microarchitecture support"
             else
                 log -i "NVIDIA Proprietary drivers are available"
-                GPU_BACKEND="CUDA"
+                if command -v nvcc >/dev/null 2>&1; then
+                    GPU_BACKEND="CUDA"
+                else
+                    log -f "No CUDA toolkit is detected on the current system, it is better to install it yourself first before continuing"
+                fi
+                
             fi
         else
             log -e "No NVIDIA Proprietary drivers found. If you're using an open-source driver, CUDA Simply won't work"
