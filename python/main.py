@@ -9,28 +9,18 @@ if sys.executable != VENV_PYTHON:
 
 #Actual part of the code here
 import argparse
-try:
-    import tomlib
-except ImportError:
-    import tomli as tomlib
-import tomli_w
-import subprocess
-from pathlib import Path
-from huggingface_hub import HfApi, hf_hub_download
-import signal
 # Internal related modules
+from utils.vars import GEKOKUAI_VERSION
 from utils.logger import *
 from utils.toml_manager import *
 from utils.daemon_cleanup import *
 from modules.doctor import *
-from modules.model_manager import *
+from modules.pull_model import *
 from modules.serve import *
 from modules.status import *
-
-#Get the location where $HOME is located
-HOME = os.getenv('HOME')
-config = read_toml(f"{HOME}/.gekokuai/config/config.toml") #GekokuAI default config
-GEKOKU_HOME = config["location"]["workspace"]
+from modules.stop import *
+from modules.list_models import *
+from modules.remove_model import *
 
 signal.signal(signal.SIGTERM, daemon_cleanup)
 
@@ -91,80 +81,29 @@ def main():
 
     args = parser.parse_args()
 
-    #catch any methods to kill this... thing
-
     if args.command == "info":
-        print("GekokuAI\n" + version + "\n")
-    
+        print("GekokuAI\n" + GEKOKUAI_VERSION + "\n")
+
     if args.command == "doctor":
         start_doctor()
 
     if args.command == "pull":
         pull_model(args)
-    
+
     if args.command == "serve":
         serve_model(args)
-
 
     if args.command == "status":
         status(args)
 
     if args.command == "stop":
-        info("Stopping GekokuAI server...")
-        runtime_file_path = Path(f"{GEKOKU_HOME}/runtime/runtime.toml")
-        if not runtime_file_path.is_file():
-            warn("Runtime file not found, creating a default inactive runtime information")
-            runtime_data = {
-                "server": {
-                    "running": False,
-                    "pid": 0,
-                    "model": "",
-                    "host": "",
-                    "port": ""
-                }
-            }
-            with open (runtime_file_path, "wb") as toml_file:
-                tomli_w.dump(runtime_data, toml_file)
-        with open(runtime_file_path, "rb") as f:
-            runtime_file = tomlib.load(f)
-        status_pid = runtime_file["server"]["pid"]
-        if status_pid != 0:
-            os.kill(status_pid, signal.SIGTERM)
-            success(f"Server succesfully killed. PID {status_pid}")
-        else:
-            error("There's no server to stop...")
-    
+        stop_model_serve(args)
+
     if args.command == "list":
-        print("All downloaded models from huggingface\n\n")
-        models_dir_path = Path(f"{GEKOKU_HOME}/models")
-        for file in models_dir_path.iterdir():
-            model_file_path = models_dir_path / file
-            with open(model_file_path, "rb") as f:
-                model_info = tomlib.load(f)
-            model_id_info = model_info["id"]
-            model_repo_info = model_info["metadata"]["repo"]
-            model_path_info = model_info["metadata"]["path"]
-            print(f"ID: {model_id_info}\nRepository: {model_repo_info}\nFile path: {model_path_info}\n\n")
+        list_model(args)
 
     if args.command == "remove":
-        choice = input(f"Do you really want to remove {args.remove_model} model? (y/n): ")
-        if choice in ['y', 'Y', 'yes', 'Yes', 'YES']:
-            log(f"Removing {args.remove_model} from shelf...")
-            model_info_path = Path(f"{GEKOKU_HOME}/models/{args.remove_model}.toml")
-            with open(model_info_path, "rb") as f:
-                model_info = tomlib.load(f)
-            model_file_path = Path(model_info["metadata"]["path"])
-            mmproj_file_path = Path(model_info["metadata"]["mmproj_path"])
-            log(f"Removing model file, Path: {model_file_path}")
-            model_file_path.unlink(missing_ok=True)
-            if mmproj_file_path.name:
-                log(f"Removing mmproj file, Path: {mmproj_file_path}")
-                mmproj_file_path.unlink(missing_ok=True)
-            log(f"Deleting model information...")
-            model_info_path.unlink(missing_ok=True)
-            success("Model has successfully been removed")
-        else:
-            info("Removal cancelled...")
-            
+        remove_model(args)
+
 if __name__ == "__main__":
     main()

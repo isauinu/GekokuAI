@@ -160,6 +160,7 @@ compile_environment() {
     mkdir -p "$GEKOKU_HOME/runtime"
     mkdir -p "$GEKOKU_HOME/config"
     mkdir -p "$GEKOKU_HOME/tmp"
+    cp metadata.toml "$GEKOKU_HOME/"
     log -s "Workspace created successfully at $GEKOKU_HOME"
 
     #compiling llama cpp

@@ -22,20 +22,23 @@ def pull_model(args):
             if args.quantization in file and "mmproj" in file:
                 log(f"Found mmproj file: {file}")
                 mmproj_target_file = file
-        #if no quantization specified, Get Q4_K_M by default
-        elif "Q4_K_M" in file and not "mmproj" in file:
-            log(f"Found model file: {file}")
-            model_target_file = file
-        elif "Q4_K_M" in file and "mmproj" in file:
-            log(f"Found mmproj file: {file}")
-            mmproj_target_file = file
-        #if NO Q4_K_M version, get whatever is available
-        elif not "mmproj" in file and "gguf" in file and not model_target_file:
-            log(f"Found model file: {file}")
-            model_target_file = file
-        elif "mmproj" in file and not mmproj_target_file and f"{model_target_file[:-5]}" in file and not mmproj_target_file:
-            log(f"Found mmproj file: {file}")
-            mmproj_target_file = file
+        else:
+            #if no quantization specified, Get Q4_K_M by default
+            if "Q4_K_M" in file:
+                if not "mmproj" in file:
+                    log(f"Found model file: {file}")
+                    model_target_file = file
+                if "Q4_K_M" in file and "mmproj" in file:
+                    log(f"Found mmproj file: {file}")
+                    mmproj_target_file = file
+            else:
+                #if NO Q4_K_M version, get whatever is available
+                if not "mmproj" in file and "gguf" in file and not model_target_file:
+                    log(f"Found model file: {file}")
+                    model_target_file = file
+                if "mmproj" in file and not mmproj_target_file and f"{model_target_file[:-5]}" in file and not mmproj_target_file:
+                    log(f"Found mmproj file: {file}")
+                    mmproj_target_file = file
 
     if model_target_file == None:
         fatal(f"Couldn't find requested quantization model in {args.pull_model} repo")
@@ -75,6 +78,6 @@ def pull_model(args):
             "llama_args": ""
         },
     }
-    toml_path = models_dir_path / f"{model_target_file[:-5]}.toml"
+    toml_path = Path(f"{models_dir_path}", f"{model_target_file[:-5]}.toml")
     write_toml(toml_path, model_data)
     success("Succesfully pulling from source")

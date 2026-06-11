@@ -1,6 +1,7 @@
 # GekokuAI
 Status:
-Alpha 0.1 (Early Development)
+v0.1.2 (Early Development)
+Abstraction layer has been added (currently in the work )
 
 a self-written local LLM Launcher directly from your CLI alone.
 currently supports all linux distro that uses APT, pacman, and DNF as its package manager

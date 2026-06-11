@@ -1,5 +1,4 @@
 import subprocess
-import os
 from utils.toml_manager import *
 from utils.vars import CONFIG_DATA
 
