@@ -2,6 +2,7 @@ from utils.vars import MODELS_DIR_PATH
 from utils.logger import *
 from pathlib import Path
 
+#Added abstraction layer
 def check_model_exists(model):
     model_id = None
     for file in MODELS_DIR_PATH.iterdir():
