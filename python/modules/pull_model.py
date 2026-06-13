@@ -2,7 +2,7 @@ from huggingface_hub import HfApi, hf_hub_download
 from pathlib import Path
 from utils.logger import *
 from utils.toml_manager import *
-from utils.vars import GEKOKU_HOME
+from utils.vars import MODELS_DIR_PATH
 
 def pull_model(args):
     info("Starting model pull from hugging face")
@@ -61,10 +61,9 @@ def pull_model(args):
     else:
         mmproj_file_path = ""
     log(f"Creating json entry for model {model_target_file}")
-    models_dir_path = Path(f"{GEKOKU_HOME}", "models")
-    if not models_dir_path.is_dir():
+    if not MODELS_DIR_PATH.is_dir():
         warn("Models folder doesn't exist at a designated path, creating one")
-        models_dir_path.mkdir(parents=True, exist_ok=True)
+        MODELS_DIR_PATH.mkdir(parents=True, exist_ok=True)
 
     model_data = {
         "id": model_target_file[:-5],
@@ -78,6 +77,6 @@ def pull_model(args):
             "llama_args": ""
         },
     }
-    toml_path = Path(f"{models_dir_path}", f"{model_target_file[:-5]}.toml")
+    toml_path = Path(f"{MODELS_DIR_PATH}", f"{model_target_file[:-5]}.toml")
     write_toml(toml_path, model_data)
     success("Succesfully pulling from source")

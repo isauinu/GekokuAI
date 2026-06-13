@@ -18,9 +18,10 @@ from modules.doctor import *
 from modules.pull_model import *
 from modules.serve import *
 from modules.status import *
-from modules.stop import *
+from modules.stop_model import *
 from modules.list_models import *
 from modules.remove_model import *
+from daemon.daemon_start import *
 
 signal.signal(signal.SIGTERM, daemon_cleanup)
 
@@ -54,7 +55,6 @@ def main():
 
     #serve subcommand
     parser_pull = subparser.add_parser("serve", description="Run llama.cpp backend")
-    parser_pull.add_argument("serve_model", help="Which model to run?", type=str)
     parser_pull.add_argument("--host", help="Where to host?", type=str)
     parser_pull.add_argument("--port", help="Where from port?", type=int)
 
@@ -91,7 +91,7 @@ def main():
         pull_model(args)
 
     if args.command == "serve":
-        serve_model(args)
+        start_daemon(args)
 
     if args.command == "status":
         status(args)
