@@ -17,3 +17,5 @@ def stop_daemon():
         if daemon_pid:
             os.kill(daemon_pid, signal.SIGTERM)
             success("Signaled daemon to terminate")
+    else:
+        error("The daemon is not running")

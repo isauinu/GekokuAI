@@ -19,8 +19,10 @@ from modules.pull_model import *
 from modules.serve import *
 from modules.status import *
 from modules.stop_model import *
+from modules.stop_daemon import *
 from modules.list_models import *
 from modules.remove_model import *
+from modules.stop_model import *
 from daemon.daemon_start import *
 
 signal.signal(signal.SIGTERM, daemon_cleanup)
@@ -51,7 +53,9 @@ def main():
     'IQ4_NL', 'IQ4_XS',
     'FP16', 'BF16', 'FP32'
     ])
-    parser_pull.add_argument("--embeddings", action="store_true", help="Indicates that the model is an embedding model")
+    parser_pull.add_argument("--embedding", action="store_true", help="Indicates that the model is an embedding model")
+    parser_pull.add_argument("--vision", action="store_true", help="Indicates that the model is a vision model")
+    parser_pull.add_argument("--chat-vision", action="store_true", help="Indicates that the model has chat and vision capabilities")
 
     #serve subcommand
     parser_pull = subparser.add_parser("serve", description="Run llama.cpp backend")
@@ -69,8 +73,8 @@ def main():
     parser_remove.add_argument("remove_model", help="Which model to remove?")
 
     #load subcommand (TODO)
-    # parser_run = subparser.add_parser("load", description="load a downloaded model from huggingface")
-    # parser_run.add_argument("load_model", help="Which model to load")
+    parser_run = subparser.add_parser("load", description="load a downloaded model from huggingface")
+    parser_run.add_argument("load_model", help="Which model to load")
 
     #unload subcommand (TODO)
     # parser_run = subparser.add_parser("unload", description="load a downloaded model from huggingface")
@@ -97,13 +101,19 @@ def main():
         status(args)
 
     if args.command == "stop":
-        stop_model_serve(args)
+        stop_daemon()
 
     if args.command == "list":
         list_model(args)
 
     if args.command == "remove":
         remove_model(args)
+
+    if args.command == "load":
+        launch_model(args.load_model)
+    
+    if args.command == "unload":
+        stop_model(args)
 
 if __name__ == "__main__":
     main()

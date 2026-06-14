@@ -5,7 +5,7 @@ from pathlib import Path
 import subprocess
 from datetime import datetime
 
-def start_daemon():
+def start_daemon(args):
     info("Starting Gekoku daemon...")
     timestap_log = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     log_file_path = Path(LOG_DIR_PATH, f"{timestap_log}_gekoku.log")

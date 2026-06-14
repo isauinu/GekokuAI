@@ -1,13 +1,21 @@
-from huggingface_hub import HfApi, hf_hub_download
+from huggingface_hub import HfApi, hf_hub_download, utils
 from pathlib import Path
 from utils.logger import *
 from utils.toml_manager import *
 from utils.vars import MODELS_DIR_PATH
+import time
 
 def pull_model(args):
     info("Starting model pull from hugging face")
     api = HfApi()
-    files = api.list_repo_files(repo_id=f"{args.pull_model}")
+    try:
+        files = api.list_repo_files(repo_id=f"{args.pull_model}")
+    except utils.RepositoryNotFoundError:
+        error(f"No model found with the repo name {args.pull_model}")
+        fatal("Aborting...")
+    except Exception as e:
+        error(f"An unknown error occured: {e}")
+        fatal("Aborting...")
     model_target_file = None
     mmproj_target_file = None
     log(f"Found the following files in {args.pull_model}:")
@@ -71,11 +79,17 @@ def pull_model(args):
             "repo": args.pull_model,
             "file": model_target_file,
             "path": model_file_path,
-            "mmproj_path": mmproj_file_path or ''
+            "mmproj_path": mmproj_file_path or '',
+            "created": int(time.time())
         },
         "arguments": {
             "llama_args": ""
         },
+        "capabilities": {
+            "chat": True,
+            "embedding": False,
+            "vision": False
+        }
     }
     toml_path = Path(f"{MODELS_DIR_PATH}", f"{model_target_file[:-5]}.toml")
     write_toml(toml_path, model_data)

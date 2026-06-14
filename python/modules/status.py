@@ -1,6 +1,5 @@
-from pathlib import Path
 from utils.toml_manager import *
-from utils.vars import GEKOKUAI_VERSION, RUNTIME_DIR_PATH, RUNTIME_DAEMON_FILE_PATH, RUNTIME_DAEMON_DATA
+from utils.vars import GEKOKUAI_VERSION, RUNTIME_DAEMON_DATA
 from utils.logger import *
 from utils.exception_handling import *
 
