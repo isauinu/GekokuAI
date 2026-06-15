@@ -1,7 +1,6 @@
 # GekokuAI
 Status:
-v0.1.2 (Early Development)
-Abstraction layer has been added (currently in the work )
+v0.3-beta (USABLE)
 
 a self-written local LLM Launcher directly from your CLI alone.
 currently supports all linux distro that uses APT, pacman, and DNF as its package manager
@@ -29,9 +28,6 @@ and then refresh your shell environment, example
 - gekoku doctor
 - gekoku list
 - gekoku stop
-
-Planned:
-- Router Mode
-- Multi-model orchestration
-- Backend abstraction
-- Advanced runtime management
+- gekoku load
+- gekoku unload
+- gekoku logs
