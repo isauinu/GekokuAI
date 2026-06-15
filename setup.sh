@@ -472,7 +472,7 @@ check_system() {
             log -e "No ROCm utilities found"
         fi
     elif command -v vulkaninfo >/dev/null 2>&1; then
-        if vulkaninfo --summary | grep -qi "Device Type.*GPU"; then
+        if vulkaninfo --summary 2>/dev/null | grep -qi "deviceType.*gpu"; then
             log -i "Universal Vulkan Graphics API are available"
             GPU_BACKEND="vulkan"
         fi
@@ -502,9 +502,6 @@ check_system() {
 }
 
 main() {
-    printf "\033c" #Cleans Terminal
-    tput smcup #alternate screen
-    tput civis #hides cursor
     trap cleanup INT
     trap 'unexpected_error $LINENO' ERR
 
