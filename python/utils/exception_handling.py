@@ -5,7 +5,7 @@ from utils.logger import *
 def check_model_exists(model):
     model_id = None
     for file in MODELS_DIR_PATH.iterdir():
-        if model in file.name:
+        if f"{model}.toml" == file.name:
             log(f"Found model: {file.stem}")
             model_id = file
     if model_id:

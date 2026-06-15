@@ -3,7 +3,7 @@
 #Exit when a command dies
 set -Eeuo pipefail
 #DESCRIPTION
-ver="Alpha v0.1.2 (EARLY DEVELOPMENT)"
+ver="v0.3-beta (USABLE)"
 date="$(date "+%F")"
 author="ISAUINU"
 

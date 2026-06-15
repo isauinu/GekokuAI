@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException ,status
 from utils.toml_manager import *
 from utils.vars import API_PREFIX, RUNTIME_DAEMON_DATA
 from fastapi import Request
@@ -14,7 +14,13 @@ async def chat(req: Request):
     body = await req.json()
     log(f"type of request: {type(body)}")
     log(f"Content of request: {body}")
+    models_list = RUNTIME_DAEMON_DATA["server"]["models"]
     model = body["model"]
+    if not model in models_list:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Unable to find model with that name"
+        )
     log(f"Found model: {model}")
     port = RUNTIME_DAEMON_DATA[model]["port"]
     log(f"Found port for targeted model at: {port}")
@@ -33,4 +39,7 @@ async def chat(req: Request):
 
         return StreamingResponse(generate(), media_type="text/event-stream")
     else:
-        return status.HTTP_400_BAD_REQUEST
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Bad request"
+        )

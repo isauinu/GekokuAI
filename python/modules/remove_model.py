@@ -24,4 +24,4 @@ def remove_model(args):
         else:
             info("Removal cancelled...")
     else:
-        error("No model found associated with that name or ID")
+        error("No model found associated with that name")

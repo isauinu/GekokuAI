@@ -4,6 +4,7 @@ from utils.logger import *
 from utils.toml_manager import *
 from utils.vars import MODELS_DIR_PATH
 import time
+from utils.interrupt_handler import *
 
 def pull_model(args):
     info("Starting model pull from hugging face")
@@ -16,8 +17,21 @@ def pull_model(args):
     except Exception as e:
         error(f"An unknown error occured: {e}")
         fatal("Aborting...")
+    
     model_target_file = None
     mmproj_target_file = None
+    capability_chat = True
+    capability_vision = False
+    capability_embedding = False
+
+    if args.vision:
+        log("Model is determined to have vision capability")
+    elif args.embedding:
+        log("Model is determined to be embedding model")
+        capability_chat = False
+        capability_vision = False
+        capability_embedding = True
+
     log(f"Found the following files in {args.pull_model}:")
     #Get model file
     for file in files:
@@ -30,6 +44,13 @@ def pull_model(args):
             if args.quantization in file and "mmproj" in file:
                 log(f"Found mmproj file: {file}")
                 mmproj_target_file = file
+                capability_chat = True
+                capability_vision = True
+            if args.vision and "mmproj" in file:
+                log(f"Found mmproj file: {file}")
+                mmproj_target_file = file
+                capability_chat = True
+                capability_vision = True
         else:
             #if no quantization specified, Get Q4_K_M by default
             if "Q4_K_M" in file:
@@ -39,19 +60,37 @@ def pull_model(args):
                 if "Q4_K_M" in file and "mmproj" in file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
+                    capability_chat = True
+                    capability_vision = True
+                if args.vision and "mmproj" in file:
+                    log(f"Found mmproj file: {file}")
+                    mmproj_target_file = file
+                    capability_chat = True
+                    capability_vision = True
             else:
                 #if NO Q4_K_M version, get whatever is available
                 if not "mmproj" in file and "gguf" in file and not model_target_file:
                     log(f"Found model file: {file}")
                     model_target_file = file
-                if "mmproj" in file and not mmproj_target_file and f"{model_target_file[:-5]}" in file and not mmproj_target_file:
+                if "mmproj" in file and not mmproj_target_file and f"{model_target_file[:-5]}" in file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
+                    capability_chat = True
+                    capability_vision = True
+                if args.vision and "mmproj" in file and not mmproj_target_file:
+                    log(f"Found mmproj file: {file}")
+                    mmproj_target_file = file
+                    capability_chat = True
+                    capability_vision = True
 
     if model_target_file == None:
         fatal(f"Couldn't find requested quantization model in {args.pull_model} repo")
 
     log(f"Model file: {model_target_file}, mmproj: {mmproj_target_file or ''}")
+    log(f"Capabilities: is_chat: {capability_chat}, is_vision: {capability_vision}, is_embedding: {capability_embedding}")
+    if args.vision and not mmproj_target_file:
+        error("No mmproj is found on the repo, resuming installation without it")
+    
     log(f"Downloading file: {model_target_file}")
     model_file_path = hf_hub_download(
         repo_id=args.pull_model,
@@ -69,6 +108,7 @@ def pull_model(args):
     else:
         mmproj_file_path = ""
     log(f"Creating json entry for model {model_target_file}")
+    
     if not MODELS_DIR_PATH.is_dir():
         warn("Models folder doesn't exist at a designated path, creating one")
         MODELS_DIR_PATH.mkdir(parents=True, exist_ok=True)
@@ -86,11 +126,12 @@ def pull_model(args):
             "llama_args": ""
         },
         "capabilities": {
-            "chat": True,
-            "embedding": False,
-            "vision": False
+            "chat": capability_chat,
+            "vision": capability_vision,
+            "embedding": capability_embedding
         }
     }
+    
     toml_path = Path(f"{MODELS_DIR_PATH}", f"{model_target_file[:-5]}.toml")
     write_toml(toml_path, model_data)
     success("Succesfully pulling from source")

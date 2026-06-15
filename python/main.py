@@ -23,12 +23,40 @@ from modules.stop_daemon import *
 from modules.list_models import *
 from modules.remove_model import *
 from modules.stop_model import *
+from modules.logs import *
 from daemon.daemon_start import *
 
 signal.signal(signal.SIGTERM, daemon_cleanup)
 
 def main():
-    parser = argparse.ArgumentParser(description="Gekoku Backend command")
+    parser = argparse.ArgumentParser(
+        prog="gekoku",
+        description=f"""
+    GekokuAI {GEKOKUAI_VERSION}
+    Help command output
+    use "gekoku [sub-command] -h" to understand more about the command
+
+    Model Management:
+    pull      Download model from HuggingFace
+    list      List installed models
+    info      Show model information
+    remove    Remove installed model
+
+    Runtime:
+    serve     Start daemon
+    stop      Stop daemon
+    status    Show daemon status
+    logs      View daemon logs
+
+    Model Loading:
+    load      Load model into runtime
+    unload    Unload model from runtime
+
+    Maintenance:
+    doctor    Check installation and dependencies
+    """,
+        formatter_class=argparse.RawTextHelpFormatter
+    )
     subparser = parser.add_subparsers(dest="command", required=True)
 
     #info subcommand
@@ -55,7 +83,6 @@ def main():
     ])
     parser_pull.add_argument("--embedding", action="store_true", help="Indicates that the model is an embedding model")
     parser_pull.add_argument("--vision", action="store_true", help="Indicates that the model is a vision model")
-    parser_pull.add_argument("--chat-vision", action="store_true", help="Indicates that the model has chat and vision capabilities")
 
     #serve subcommand
     parser_pull = subparser.add_parser("serve", description="Run llama.cpp backend")
@@ -72,16 +99,19 @@ def main():
     parser_remove = subparser.add_parser("remove", description="Remove the selected downloaded model")
     parser_remove.add_argument("remove_model", help="Which model to remove?")
 
-    #load subcommand (TODO)
-    parser_run = subparser.add_parser("load", description="load a downloaded model from huggingface")
-    parser_run.add_argument("load_model", help="Which model to load")
+    #load subcommand
+    parser_load = subparser.add_parser("load", description="load a downloaded model from huggingface")
+    parser_load.add_argument("load_model", help="Which model to load")
 
-    #unload subcommand (TODO)
-    # parser_run = subparser.add_parser("unload", description="load a downloaded model from huggingface")
-    # parser_run.add_argument("load_model", help="Which model to unload")
+    #unload subcommand
+    parser_unload = subparser.add_parser("unload", description="load a downloaded model from huggingface")
+    parser_unload.add_argument("unload_model", help="Which model to unload")
 
     #stop subcommand
     parser_stop = subparser.add_parser("stop", description="Stops the currently running Gekoku Backend")
+
+    #logs subcommand
+    parser_logs = subparser.add_parser("logs", description="tail on logs of the currently running daemon")
 
     args = parser.parse_args()
 
@@ -113,7 +143,10 @@ def main():
         launch_model(args.load_model)
     
     if args.command == "unload":
-        stop_model(args)
+        stop_model(args.unload_model)
+
+    if args.command == "logs":
+        tail_logs()
 
 if __name__ == "__main__":
     main()

@@ -8,6 +8,7 @@ from api.health import router as health_router
 from api.openai_api.chat_completions import router as oai_chat_completions_router
 from api.openai_api.completions import router as oai_completions_router
 from api.openai_api.models import router as oai_models
+from api.openai_api.embeddings import router as oai_embeddings
 
 app = FastAPI()
 
@@ -19,3 +20,4 @@ app.include_router(oai_chat_completions_router)
 app.include_router(oai_completions_router)
 app.include_router(oai_models)
 app.include_router(health_router)
+app.include_router(oai_embeddings)

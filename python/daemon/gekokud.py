@@ -3,10 +3,9 @@ import sys
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 
-import time
 import signal
 from utils.toml_manager import *
-from utils.vars import MODELS_DIR_PATH, CONFIG_DATA, RUNTIME_DAEMON_DATA
+from utils.vars import CONFIG_DATA
 from utils.logger import *
 from utils.daemon_cleanup import *
 from daemon.api.app import app
