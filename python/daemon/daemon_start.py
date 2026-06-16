@@ -9,15 +9,23 @@ import requests
 
 def start_daemon(args):
     info("Starting Gekoku daemon...")
-    server_host = CONFIG_DATA["server"]["host"] or '127.0.0.1'
-    server_port = CONFIG_DATA["server"]["port"] or 8080
+    if args.host:
+        server_host = args.host
+    else:
+        server_host = CONFIG_DATA["server"]["host"] or '127.0.0.1'
+    if args.port:
+        server_port = args.port
+    else:
+        server_port = CONFIG_DATA["server"]["port"] or 8080
+    
     if check_if_port_used(server_port):
         response = requests.get(f"http://127.0.0.1:{server_port}/api/v1/health")
         if response:
             error("an existing Gekoku daemon is running in the background, aborting starting another one")
             fatal("Aborting...")
-        error(f"A process already occupied port {server_port}. make sure that port is available to use")
-        fatal("Aborting...")
+        else:
+            error(f"A process already occupied port {server_port}. make sure that port is available to use")
+            fatal("Aborting...")
     timestap_log = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     log_file_path = Path(LOG_DIR_PATH, f"{timestap_log}_gekoku.log")
     try:

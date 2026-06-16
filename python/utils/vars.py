@@ -37,7 +37,10 @@ if not RUNTIME_DAEMON_FILE_PATH.is_file():
         }
     }
     write_toml(RUNTIME_DAEMON_FILE_PATH, runtime_data)
-RUNTIME_DAEMON_DATA = read_toml(RUNTIME_DAEMON_FILE_PATH)
+
+def get_daemon_data():
+    return read_toml(RUNTIME_DAEMON_FILE_PATH)
+RUNTIME_DAEMON_DATA = get_daemon_data()
 
 parent_folder = Path(__file__).resolve().parent.parent.parent
 GEKOKUAI_METADATA_PATH = Path(f"{parent_folder}", "metadata.toml")

@@ -12,7 +12,12 @@ def stop_model(model):
         if model in models_list:
             pid = RUNTIME_DAEMON_DATA[model]["pid"]
             if pid:
-                os.kill(pid, signal.SIGTERM)
+                try:
+                    os.kill(pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    error(f"No process found with PID: {pid}")
+                except OSError as e:
+                    error(f"No process found with PID: {pid} (Error: {e})")
                 success(f"Server for model {model} succesfully killed. PID {pid}")
                 llama_cleanup(model)
                 return True

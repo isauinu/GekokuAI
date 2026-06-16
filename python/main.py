@@ -37,13 +37,12 @@ def main():
     use "gekoku [sub-command] -h" to understand more about the command
 
     Model Management:
-    pull      Download model from HuggingFace
+    pull      Download model from HuggingFace | -q, --quantization | --vision | --embedding 
     list      List installed models
-    info      Show model information
     remove    Remove installed model
 
     Runtime:
-    serve     Start daemon
+    serve     Start daemon | --host | --port
     stop      Stop daemon
     status    Show daemon status
     logs      View daemon logs
@@ -52,7 +51,8 @@ def main():
     load      Load model into runtime
     unload    Unload model from runtime
 
-    Maintenance:
+    Misc:
+    info      Show  GekokuAI information
     doctor    Check installation and dependencies
     """,
         formatter_class=argparse.RawTextHelpFormatter

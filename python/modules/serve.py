@@ -32,8 +32,8 @@ def launch_model(launch_model):
             model_is_embedding = model_config["capabilities"]["embedding"]
             llama_cpp = Path(CONFIG_DATA["llama_cpp"]["llama_cpp_path"], "build", "bin", "llama-server")
             llama_args = model_config["arguments"]["llama_args"]
-            server_host = CONFIG_DATA["server"]["host"]
-            config_port = CONFIG_DATA["server"]["port"]
+            server_host = RUNTIME_DAEMON_DATA["server"]["host"]
+            config_port = RUNTIME_DAEMON_DATA["server"]["port"]
             server_port = get_unused_port(config_port)
             
             launch_command = [str(llama_cpp), "-m", model_path, "--port", str(server_port)]

@@ -3,7 +3,7 @@
 #Exit when a command dies
 set -Eeuo pipefail
 #DESCRIPTION
-ver="v0.3-beta (USABLE)"
+ver="v0.3"
 date="$(date "+%F")"
 author="ISAUINU"
 
@@ -176,7 +176,7 @@ compile_environment() {
 
     log -i "Compiling llama.cpp"
     cd "$GEKOKU_HOME/llama.cpp"
-    local build_args=("-DCMAKE_BUILD_TYPE=Release" "-DGGML_NATIVE=ON")
+    local build_args=("-DCMAKE_BUILD_TYPE=Release" "-DGGML_NATIVE=ON" "-DLLAMA_BUILD_TESTS=OFF")
     # case "$CPU_BACKEND" in
     #     AVX512) build_args+=("-DGGML_AVX512=ON") ;;
     #     AVX2) build_args+=("-DGGML_AVX2=ON") ;;
@@ -189,12 +189,12 @@ compile_environment() {
         vulkan) build_args+=("-DGGML_VULKAN=ON") ;;
         *) : ;;
     esac
-    cmake -B build "${build_args[@]}"
+    cmake -B build "${build_args[@]}" . --log-level=VERBOSE
     log -s "Build configuration generated"
     sleep 0.5
     log -i "Building llama.cpp"
     cmake --build build -j$(nproc)
-    log -s "Successfully building llama.cpp! "
+    log -s "Successfully building llama.cpp!"
     sleep 0.5
     log "Verifying llama.cpp existence"
     local result=$(find build -type f -executable | grep -i llama)
@@ -246,6 +246,10 @@ tmp_path = "$GEKOKU_HOME/tmp"
 
 [llama_cpp]
 llama_cpp_path = "$GEKOKU_HOME/llama.cpp"
+
+[security]
+host_managed_endpoints = False
+allowed_hosts = ["127.0.0.1", "::1"]
 EOF
     log -s "Successfully created config file at $config_file"
     log -i "Installing Gekoku to local user"

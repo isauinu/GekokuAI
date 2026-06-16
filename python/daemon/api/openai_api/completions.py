@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from utils.toml_manager import *
-from utils.vars import API_PREFIX, RUNTIME_DAEMON_DATA
+from utils.vars import API_PREFIX, get_daemon_data
 from fastapi import Request
 from utils.logger import *
 import requests
@@ -14,6 +14,7 @@ async def chat(req: Request):
     body = await req.json()
     log(f"type of request: {type(body)}")
     log(f"Content of request: {body}")
+    RUNTIME_DAEMON_DATA = get_daemon_data()
     models_list = RUNTIME_DAEMON_DATA["server"]["models"]
     model = body["model"]
     if not model in models_list:
