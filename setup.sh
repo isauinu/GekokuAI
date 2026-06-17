@@ -248,7 +248,7 @@ tmp_path = "$GEKOKU_HOME/tmp"
 llama_cpp_path = "$GEKOKU_HOME/llama.cpp"
 
 [security]
-host_managed_endpoints = 0
+host_managed_endpoints = false
 allowed_hosts = ["127.0.0.1", "::1"]
 EOF
     log -s "Successfully created config file at $config_file"
