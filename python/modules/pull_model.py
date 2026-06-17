@@ -38,10 +38,10 @@ def pull_model(args):
         print(file, end=", ")
         #Get model when quantization is specified
         if args.quantization:
-            if args.quantization in file and not "mmproj" in file:
+            if args.quantization in file or args.quantization.lower() in file or args.quantization.casefold() in file and not "mmproj" in file:
                 log(f"Found model file: {file}")
                 model_target_file = file
-            if args.quantization in file and "mmproj" in file:
+            if args.quantization in file or args.quantization.lower() in file or args.quantization.casefold() in file and "mmproj" in file:
                 log(f"Found mmproj file: {file}")
                 mmproj_target_file = file
                 capability_chat = True
@@ -53,11 +53,11 @@ def pull_model(args):
                 capability_vision = True
         else:
             #if no quantization specified, Get Q4_K_M by default
-            if "Q4_K_M" in file:
+            if "Q4_K_M" in file or "Q4_K_M".lower() in file or "Q4_K_M".casefold() in file:
                 if not "mmproj" in file:
                     log(f"Found model file: {file}")
                     model_target_file = file
-                if "Q4_K_M" in file and "mmproj" in file:
+                if "mmproj" in file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
                     capability_chat = True
