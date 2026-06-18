@@ -2,6 +2,9 @@ from utils.toml_manager import *
 from utils.vars import GEKOKUAI_VERSION, RUNTIME_DAEMON_DATA
 from utils.logger import *
 from utils.exception_handling import *
+from utils.runtime import check_runtime
+
+check_runtime()
 
 def status(args):
     status_running = RUNTIME_DAEMON_DATA["server"]["running"]

@@ -1,4 +1,5 @@
 
+from utils.runtime import *
 from utils.logger import *
 from utils.vars import MODELS_DIR_PATH, CONFIG_DATA, RUNTIME_DIR_PATH, RUNTIME_DAEMON_DATA, RUNTIME_DAEMON_FILE_PATH
 from utils.toml_manager import *
@@ -51,17 +52,21 @@ def launch_model(launch_model):
                     launch_command.append(arguments)
             log(f"Final command form: {launch_command}")
             launch_process = subprocess.Popen(launch_command, stdout=open(log_file_path, "a"), stderr=open(log_file_path, "a"))
-            RUNTIME_DAEMON_DATA[launch_model] = {
-                "pid": launch_process.pid,
-                "port": server_port
-            }
-            RUNTIME_DAEMON_DATA["server"]["models"].append(launch_model)
-            if not RUNTIME_DIR_PATH.is_dir():
-                warn("Runtime folder to store server information doesn't exist, creating one")
-                RUNTIME_DIR_PATH.mkdir(parents=True, exist_ok=True)
-            write_toml(RUNTIME_DAEMON_FILE_PATH, RUNTIME_DAEMON_DATA)
-            success("Successfully created runtime data")
-            return True
+            if wait_until_ready(launch_process, server_port):
+                RUNTIME_DAEMON_DATA[launch_model] = {
+                    "pid": launch_process.pid,
+                    "port": server_port
+                }
+                RUNTIME_DAEMON_DATA["server"]["models"].append(launch_model)
+                if not RUNTIME_DIR_PATH.is_dir():
+                    warn("Runtime folder to store server information doesn't exist, creating one")
+                    RUNTIME_DIR_PATH.mkdir(parents=True, exist_ok=True)
+                write_toml(RUNTIME_DAEMON_FILE_PATH, RUNTIME_DAEMON_DATA)
+                success("Successfully created runtime data")
+                return True
+            else:
+                error("Unable to start model due to an error, please check logs")
+                return False
         else:
             error("Unable to start model because model with that name does not exist")
             return False
