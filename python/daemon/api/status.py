@@ -1,12 +1,14 @@
 from fastapi import APIRouter
 from utils.logger import *
 from utils.vars import API_PREFIX, get_daemon_data
+from utils.runtime import check_runtime
 
 router = APIRouter(prefix=API_PREFIX)
 
 @router.get("/status")
 def read_status():
     log("Recieved signal")
+    check_runtime()
     RUNTIME_DAEMON_DATA = get_daemon_data
     status_running = RUNTIME_DAEMON_DATA["server"]["running"]
     status_pid = RUNTIME_DAEMON_DATA["server"]["pid"]

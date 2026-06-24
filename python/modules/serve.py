@@ -30,7 +30,7 @@ def launch_model(launch_model):
             
             model_path = model_config["metadata"]["path"]
             model_mmproj_path = model_config["metadata"]["mmproj_path"]
-            model_is_embedding = model_config["capabilities"]["embedding"]
+            model_capabilities = model_config["metadata"]["capabilities"]
             llama_cpp = Path(CONFIG_DATA["llama_cpp"]["llama_cpp_path"], "build", "bin", "llama-server")
             llama_args = model_config["arguments"]["llama_args"]
             server_host = RUNTIME_DAEMON_DATA["server"]["host"]
@@ -38,14 +38,16 @@ def launch_model(launch_model):
             server_port = get_unused_port(config_port)
             
             launch_command = [str(llama_cpp), "-m", model_path, "--port", str(server_port)]
-            if model_mmproj_path:
-                launch_command.append("--mmproj")
-                launch_command.append(model_mmproj_path)
             if server_host:
                 launch_command.append("--host")
                 launch_command.append(server_host)
-            if model_is_embedding:
+            if model_mmproj_path and "vision" in model_capabilities:
+                launch_command.append("--mmproj")
+                launch_command.append(model_mmproj_path)
+            if "embedding" in model_capabilities:
                 launch_command.append("--embedding")
+            if "reranking" in model_capabilities:
+                launch_command.append("--reranking")
             if llama_args:
                 parsed_args = llama_args.split()
                 for arguments in parsed_args:

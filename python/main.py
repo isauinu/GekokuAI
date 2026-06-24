@@ -37,7 +37,7 @@ def main():
     use "gekoku [sub-command] -h" to understand more about the command
 
     Model Management:
-    pull      Download model from HuggingFace | -q, --quantization | --vision | --embedding 
+    pull      Download model from HuggingFace | -q, --quantization | --vision | --embedding | --reranking
     list      List installed models
     remove    Remove installed model
 
@@ -83,6 +83,7 @@ def main():
     ])
     parser_pull.add_argument("--embedding", action="store_true", help="Indicates that the model is an embedding model")
     parser_pull.add_argument("--vision", action="store_true", help="Indicates that the model is a vision model")
+    parser_pull.add_argument("--reranking", action="store_true", help="Indicates that the model is a reranking model")
 
     #serve subcommand
     parser_pull = subparser.add_parser("serve", description="Run llama.cpp backend")

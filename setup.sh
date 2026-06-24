@@ -3,7 +3,7 @@
 #Exit when a command dies
 set -Eeuo pipefail
 #DESCRIPTION
-ver="v0.3"
+ver="v0.3.2"
 date="$(date "+%F")"
 author="ISAUINU"
 
@@ -167,10 +167,10 @@ compile_environment() {
     #compiling llama cpp
     if [ -d "$GEKOKU_HOME/llama.cpp/.git" ]; then
         log -i "llama.cpp has already exists, updating instead"
-        git -C "$GEKOKU_HOME/llama.cpp" pull
+        # git -C "$GEKOKU_HOME/llama.cpp" pull
     else
         log -i "Getting llama.cpp from source"
-        git clone https://github.com/ggerganov/llama.cpp.git "$GEKOKU_HOME/llama.cpp"
+        git clone https://github.com/Anbeeld/beellama.cpp "$GEKOKU_HOME/llama.cpp"
         log -s "llama.cpp succesfully installed at $GEKOKU_HOME/llama.cpp"
     fi
 
@@ -189,11 +189,11 @@ compile_environment() {
         vulkan) build_args+=("-DGGML_VULKAN=ON") ;;
         *) : ;;
     esac
-    cmake -B build "${build_args[@]}" . --log-level=VERBOSE
+    # cmake -B build "${build_args[@]}" . --log-level=VERBOSE
     log -s "Build configuration generated"
     sleep 0.5
     log -i "Building llama.cpp"
-    cmake --build build -j$(nproc)
+    # cmake --build build -j$(nproc)
     log -s "Successfully building llama.cpp!"
     sleep 0.5
     log "Verifying llama.cpp existence"

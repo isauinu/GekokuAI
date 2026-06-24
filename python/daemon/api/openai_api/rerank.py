@@ -8,7 +8,7 @@ from pathlib import Path
 
 router = APIRouter(prefix=API_PREFIX)
 
-@router.post("/embeddings")
+@router.post("/rerank")
 async def chat(req: Request):
     info("Proxying data to the appropiate endpoint and port")
     body = await req.json()
@@ -30,13 +30,13 @@ async def chat(req: Request):
     model_file_path = Path(MODELS_DIR_PATH, f"{model}.toml")
     model_info = read_toml(model_file_path)
     model_capabilities = model_info["metadata"]["capabilities"]
-    if not "embedding" in model_capabilities:
+    if not "reranking" in model_capabilities:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Model does not support embedding"
+            detail="Model does not support reranking"
         )
     
-    response = requests.post(f"http://localhost:{port}/v1/embeddings", json=body)
+    response = requests.post(f"http://localhost:{port}/v1/rerank", json=body)
     log(f"Response Text: {response.text}")
     log(f"Status Code: {response.status_code}")
 

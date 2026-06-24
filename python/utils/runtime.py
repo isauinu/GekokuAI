@@ -2,7 +2,6 @@ from ast import Pass
 import time
 from utils.logger import *
 from utils.vars import get_daemon_data
-import os
 from utils.llama_cleanup import *
 import psutil
 

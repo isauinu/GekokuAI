@@ -20,17 +20,16 @@ def pull_model(args):
     
     model_target_file = None
     mmproj_target_file = None
-    capability_chat = True
-    capability_vision = False
-    capability_embedding = False
+    model_capabilities = []
 
     if args.vision:
         log("Model is determined to have vision capability")
     elif args.embedding:
         log("Model is determined to be embedding model")
-        capability_chat = False
-        capability_vision = False
-        capability_embedding = True
+        model_capabilities.append("embedding")
+    elif args.reranking:
+        log("Model is determined to be a reranking model")
+        model_capabilities.append("reranking")
 
     log(f"Found the following files in {args.pull_model}:")
     #Get model file
@@ -44,13 +43,11 @@ def pull_model(args):
             if args.quantization in file or args.quantization.lower() in file or args.quantization.casefold() in file and "mmproj" in file:
                 log(f"Found mmproj file: {file}")
                 mmproj_target_file = file
-                capability_chat = True
-                capability_vision = True
+                model_capabilities.append("vision")
             if args.vision and "mmproj" in file:
                 log(f"Found mmproj file: {file}")
                 mmproj_target_file = file
-                capability_chat = True
-                capability_vision = True
+                model_capabilities.append("vision")
         else:
             #if no quantization specified, Get Q4_K_M by default
             if "Q4_K_M" in file or "Q4_K_M".lower() in file or "Q4_K_M".casefold() in file:
@@ -60,13 +57,11 @@ def pull_model(args):
                 if "mmproj" in file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
-                    capability_chat = True
-                    capability_vision = True
+                    model_capabilities.append("vision")
                 if args.vision and "mmproj" in file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
-                    capability_chat = True
-                    capability_vision = True
+                    model_capabilities.append("vision")
             else:
                 #if NO Q4_K_M version, get whatever is available
                 if not "mmproj" in file and "gguf" in file and not model_target_file:
@@ -75,19 +70,17 @@ def pull_model(args):
                 if "mmproj" in file and not mmproj_target_file and f"{model_target_file[:-5]}" in file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
-                    capability_chat = True
-                    capability_vision = True
+                    model_capabilities.append("vision")
                 if args.vision and "mmproj" in file and not mmproj_target_file:
                     log(f"Found mmproj file: {file}")
                     mmproj_target_file = file
-                    capability_chat = True
-                    capability_vision = True
+                    model_capabilities.append("vision")
 
     if model_target_file == None:
         fatal(f"Couldn't find requested quantization model in {args.pull_model} repo")
 
     log(f"Model file: {model_target_file}, mmproj: {mmproj_target_file or ''}")
-    log(f"Capabilities: is_chat: {capability_chat}, is_vision: {capability_vision}, is_embedding: {capability_embedding}")
+    log(f"Capabilities: is_vision: {"vision" in model_capabilities}, is_embedding: {"embedding" in model_capabilities}, is_reranking: {"reranking" in model_capabilities}")
     if args.vision and not mmproj_target_file:
         error("No mmproj is found on the repo, resuming installation without it")
     
@@ -120,16 +113,12 @@ def pull_model(args):
             "file": model_target_file,
             "path": model_file_path,
             "mmproj_path": mmproj_file_path or '',
-            "created": int(time.time())
+            "created": int(time.time()),
+            "capabilities": model_capabilities
         },
         "arguments": {
             "llama_args": ""
         },
-        "capabilities": {
-            "chat": capability_chat,
-            "vision": capability_vision,
-            "embedding": capability_embedding
-        }
     }
     
     toml_path = Path(f"{MODELS_DIR_PATH}", f"{model_target_file[:-5]}.toml")

@@ -14,11 +14,11 @@ def stop_model(model):
             if pid:
                 try:
                     os.kill(pid, signal.SIGTERM)
+                    success(f"Server for model {model} succesfully killed. PID {pid}")
                 except ProcessLookupError:
                     error(f"No process found with PID: {pid}")
                 except OSError as e:
                     error(f"No process found with PID: {pid} (Error: {e})")
-                success(f"Server for model {model} succesfully killed. PID {pid}")
                 llama_cleanup(model)
                 return True
         else:
