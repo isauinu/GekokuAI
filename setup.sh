@@ -170,7 +170,7 @@ compile_environment() {
         # git -C "$GEKOKU_HOME/llama.cpp" pull
     else
         log -i "Getting llama.cpp from source"
-        git clone https://github.com/Anbeeld/beellama.cpp "$GEKOKU_HOME/llama.cpp"
+        git clone https://github.com/ggml-org/llama.cpp "$GEKOKU_HOME/llama.cpp"
         log -s "llama.cpp succesfully installed at $GEKOKU_HOME/llama.cpp"
     fi
 
@@ -234,7 +234,7 @@ CPU_BACKEND = "$CPU_BACKEND"
 GPU_BACKEND = "$GPU_BACKEND"
 
 [server]
-host = ""
+host = "0.0.0.0"
 port = 8080
 
 [location]
