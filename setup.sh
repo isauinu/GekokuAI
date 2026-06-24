@@ -170,7 +170,7 @@ compile_environment() {
         # git -C "$GEKOKU_HOME/llama.cpp" pull
     else
         log -i "Getting llama.cpp from source"
-        git clone https://github.com/ggml-org/llama.cpp "$GEKOKU_HOME/llama.cpp"
+        git clone https://github.com/TheTom/llama-cpp-turboquant "$GEKOKU_HOME/llama.cpp"
         log -s "llama.cpp succesfully installed at $GEKOKU_HOME/llama.cpp"
     fi
 
@@ -189,11 +189,11 @@ compile_environment() {
         vulkan) build_args+=("-DGGML_VULKAN=ON") ;;
         *) : ;;
     esac
-    # cmake -B build "${build_args[@]}" . --log-level=VERBOSE
+    cmake -B build "${build_args[@]}" . --log-level=VERBOSE
     log -s "Build configuration generated"
     sleep 0.5
     log -i "Building llama.cpp"
-    # cmake --build build -j$(nproc)
+    cmake --build build -j$(nproc)
     log -s "Successfully building llama.cpp!"
     sleep 0.5
     log "Verifying llama.cpp existence"
