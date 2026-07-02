@@ -22,7 +22,7 @@ def status(args):
     status_data = response.json()
 
     center_span = 41
-    width_span = 15
+    width_span = round(center_span / 2)
 
     print(f"[{datetime.now()}]")
     print(f"GekokuAI {GEKOKUAI_VERSION}\n")
@@ -37,7 +37,9 @@ def status(args):
     print()
 
     for key, value in status_data["models"].items():
-        print(f"{key:-^{center_span}}")
-        print(f"{"PID":<{width_span}}|  {str(value["pid"])}")
-        print(f"{"Port":<{width_span}}|  {str(value["port"])}")
+        key_center_span = len(key) + 10
+        value_width_span = round(key_center_span / 2)
+        print(f"{key:-^{key_center_span}}")
+        print(f"{"PID":<{value_width_span}}|  {str(value["pid"])}")
+        print(f"{"Port":<{value_width_span}}|  {str(value["port"])}")
         print()
