@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from utils.vars import API_PREFIX, MODELS_DIR_PATH
+from utils.globals import API_PREFIX, MODELS_DIR_PATH
 from pathlib import Path
 from utils.toml_manager import *
 from pathlib import Path

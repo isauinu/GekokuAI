@@ -1,6 +1,6 @@
 # GekokuAI
 Status:
-v0.3-beta
+v0.4-Alpha
 
 a self-written local LLM Launcher directly from your CLI alone.
 currently supports all linux distro that uses APT, pacman, and DNF as its package manager
@@ -30,4 +30,4 @@ and then refresh your shell environment, example
 - gekoku stop
 - gekoku load
 - gekoku unload
-- gekoku logs
+- gekoku logs   

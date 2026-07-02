@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException ,status
+from fastapi import APIRouter, HTTPException, status
 from utils.toml_manager import *
-from utils.vars import API_PREFIX, get_daemon_data
+from utils.globals import API_PREFIX, RUNTIME_SNAPSHOT, RUNTIME
 from fastapi import Request
 from utils.logger import *
 import requests
@@ -14,16 +14,14 @@ async def chat(req: Request):
     body = await req.json()
     log(f"type of request: {type(body)}")
     log(f"Content of request: {body}")
-    RUNTIME_DAEMON_DATA = get_daemon_data()
-    models_list = RUNTIME_DAEMON_DATA["server"]["models"]
     model = body["model"]
-    if not model in models_list:
+    if not RUNTIME.running_models[model]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Unable to find model with that name"
         )
     log(f"Found model: {model}")
-    port = RUNTIME_DAEMON_DATA[model]["port"]
+    port = RUNTIME.running_models[model].port
     log(f"Found port for targeted model at: {port}")
     if body.get("stream") == False:
         response = requests.post(f"http://localhost:{port}/v1/chat/completions", json=body)

@@ -1,6 +1,6 @@
 import subprocess
 from utils.toml_manager import *
-from utils.vars import CONFIG_DATA
+from utils.globals import CONFIG_DATA
 
 def start_doctor():
     print("GekokuAI Doctor\n")

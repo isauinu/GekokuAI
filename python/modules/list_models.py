@@ -1,5 +1,5 @@
 from pathlib import Path
-from utils.vars import MODELS_DIR_PATH
+from utils.globals import MODELS_DIR_PATH
 from utils.toml_manager import *
 
 def list_model(args):

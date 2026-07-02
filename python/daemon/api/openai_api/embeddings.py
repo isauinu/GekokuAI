@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from utils.toml_manager import *
-from utils.vars import API_PREFIX, MODELS_DIR_PATH, get_daemon_data
+from utils.globals import API_PREFIX, MODELS_DIR_PATH, RUNTIME_SNAPSHOT
 from fastapi import Request
 from utils.logger import *
 import requests
@@ -15,8 +15,7 @@ async def chat(req: Request):
     log(f"type of request: {type(body)}")
     log(f"Content of request: {body}")
     
-    RUNTIME_DAEMON_DATA = get_daemon_data()
-    models_list = RUNTIME_DAEMON_DATA["server"]["models"]
+    models_list = RUNTIME_SNAPSHOT["server"]["models"]
     model = body["model"]
     if not model in models_list:
         raise HTTPException(
@@ -24,7 +23,7 @@ async def chat(req: Request):
             detail="Unable to find model with that name"
         )
     log(f"Found model: {model}")
-    port = RUNTIME_DAEMON_DATA[model]["port"]
+    port = RUNTIME_SNAPSHOT[model]["port"]
     log(f"Found port for targeted model at: {port}")
 
     model_file_path = Path(MODELS_DIR_PATH, f"{model}.toml")

@@ -6,6 +6,7 @@ except ImportError:
     import tomli as tomlib
 from utils.toml_manager import *
 from utils.logger import *
+from utils.runtime import Runtime
 
 HOME = os.getenv('HOME') or os.path.expanduser('~')
 
@@ -19,12 +20,12 @@ GEKOKU_HOME = CONFIG_DATA["location"]["workspace"]
 MODELS_DIR_PATH = Path(f"{GEKOKU_HOME}", "models")
 
 RUNTIME_DIR_PATH = Path(f"{GEKOKU_HOME}", "runtime")
-RUNTIME_DAEMON_FILE_PATH = Path(f"{GEKOKU_HOME}", "runtime", "runtime.toml")
+RUNTIME_SNAPSHOT_FILE_PATH = Path(f"{GEKOKU_HOME}", "runtime", "runtime.toml")
 if not RUNTIME_DIR_PATH.is_dir():
     warn("Runtime folder to store server information doesn't exist, creating one")
     RUNTIME_DIR_PATH.mkdir(parents=True, exist_ok=True)
 
-if not RUNTIME_DAEMON_FILE_PATH.is_file():
+if not RUNTIME_SNAPSHOT_FILE_PATH.is_file():
     warn("Runtime file not found, creating a default inactive runtime information")
     runtime_data = {
         "server": {
@@ -36,11 +37,13 @@ if not RUNTIME_DAEMON_FILE_PATH.is_file():
             "log_file": ""
         }
     }
-    write_toml(RUNTIME_DAEMON_FILE_PATH, runtime_data)
+    write_toml(RUNTIME_SNAPSHOT_FILE_PATH, runtime_data)
 
-def get_daemon_data():
-    return read_toml(RUNTIME_DAEMON_FILE_PATH)
-RUNTIME_DAEMON_DATA = get_daemon_data()
+class RuntimeSnapshot:
+        def __getitem__(self, key):
+            data = read_toml(RUNTIME_SNAPSHOT_FILE_PATH)
+            return data[key]
+RUNTIME_SNAPSHOT = RuntimeSnapshot()
 
 parent_folder = Path(__file__).resolve().parent.parent.parent
 GEKOKUAI_METADATA_PATH = Path(f"{parent_folder}", "metadata.toml")
@@ -59,3 +62,5 @@ GEKOKUAI_VERSION = GEKOKUAI_METADATA_DATA["metadata"]["version"]
 LOG_DIR_PATH = Path(f"{GEKOKU_HOME}", "logs")
 
 API_PREFIX = "/api/v1"
+
+RUNTIME = Runtime()

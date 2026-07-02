@@ -1,5 +1,5 @@
 from fastapi import Request, HTTPException, status
-from utils.vars import CONFIG_DATA
+from utils.globals import CONFIG_DATA
 
 def check_allowed_hosts(request: Request):
     if CONFIG_DATA["security"]["host_managed_endpoints"]:

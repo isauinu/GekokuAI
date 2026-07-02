@@ -1,4 +1,4 @@
-from utils.vars import MODELS_DIR_PATH
+from utils.globals import MODELS_DIR_PATH
 from utils.logger import *
 
 #Added abstraction layer

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from utils.vars import API_PREFIX
+from utils.globals import API_PREFIX
 
 router = APIRouter(prefix=API_PREFIX)
 

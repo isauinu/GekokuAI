@@ -1,21 +1,27 @@
 import os
 import signal
-from utils.vars import RUNTIME_DAEMON_DATA
+from utils.globals import RUNTIME
 from modules.stop_model import *
 from utils.logger import *
+from utils.endpoint_response import *
 
 def stop_daemon():
-    info("Stopping Daemon")
-    loaded_models = RUNTIME_DAEMON_DATA["server"]["models"]
+    loaded_models = RUNTIME.running_models.keys()
     if loaded_models:
-        for model in loaded_models:
+        for model in tuple(loaded_models):
             stop_model(model)
-            log(f"model {model} has been stopped")
+            verbose(f"model {model} has been stopped")
         success("All loaded models are stopped")
-    daemon_pid = RUNTIME_DAEMON_DATA["server"]["pid"]
-    if RUNTIME_DAEMON_DATA["server"]["running"]:
+    daemon_pid = RUNTIME.pid
+    if RUNTIME.running:
+        info("Stopping Daemon")
         if daemon_pid:
             os.kill(daemon_pid, signal.SIGTERM)
             success("Signaled daemon to terminate")
+            return return_response(
+                True,
+                "Daemon has been safely terminated"
+            )
+
     else:
         error("The daemon is not running")

@@ -2,7 +2,7 @@ from huggingface_hub import HfApi, hf_hub_download, utils
 from pathlib import Path
 from utils.logger import *
 from utils.toml_manager import *
-from utils.vars import MODELS_DIR_PATH
+from utils.globals import MODELS_DIR_PATH
 import time
 from utils.interrupt_handler import *
 
@@ -34,45 +34,45 @@ def pull_model(args):
     log(f"Found the following files in {args.pull_model}:")
     #Get model file
     for file in files:
-        print(file, end=", ")
+        verbose(file)
         #Get model when quantization is specified
         if args.quantization:
             if args.quantization in file or args.quantization.lower() in file or args.quantization.casefold() in file and not "mmproj" in file:
-                log(f"Found model file: {file}")
+                verbose(f"Found model file: {file}")
                 model_target_file = file
             if args.quantization in file or args.quantization.lower() in file or args.quantization.casefold() in file and "mmproj" in file:
-                log(f"Found mmproj file: {file}")
+                verbose(f"Found mmproj file: {file}")
                 mmproj_target_file = file
                 model_capabilities.append("vision")
             if args.vision and "mmproj" in file:
-                log(f"Found mmproj file: {file}")
+                verbose(f"Found mmproj file: {file}")
                 mmproj_target_file = file
                 model_capabilities.append("vision")
         else:
             #if no quantization specified, Get Q4_K_M by default
             if "Q4_K_M" in file or "Q4_K_M".lower() in file or "Q4_K_M".casefold() in file:
                 if not "mmproj" in file:
-                    log(f"Found model file: {file}")
+                    verbose(f"Found model file: {file}")
                     model_target_file = file
                 if "mmproj" in file:
-                    log(f"Found mmproj file: {file}")
+                    verbose(f"Found mmproj file: {file}")
                     mmproj_target_file = file
                     model_capabilities.append("vision")
                 if args.vision and "mmproj" in file:
-                    log(f"Found mmproj file: {file}")
+                    verbose(f"Found mmproj file: {file}")
                     mmproj_target_file = file
                     model_capabilities.append("vision")
             else:
                 #if NO Q4_K_M version, get whatever is available
                 if not "mmproj" in file and "gguf" in file and not model_target_file:
-                    log(f"Found model file: {file}")
+                    verbose(f"Found model file: {file}")
                     model_target_file = file
                 if "mmproj" in file and not mmproj_target_file and f"{model_target_file[:-5]}" in file:
-                    log(f"Found mmproj file: {file}")
+                    verbose(f"Found mmproj file: {file}")
                     mmproj_target_file = file
                     model_capabilities.append("vision")
                 if args.vision and "mmproj" in file and not mmproj_target_file:
-                    log(f"Found mmproj file: {file}")
+                    verbose(f"Found mmproj file: {file}")
                     mmproj_target_file = file
                     model_capabilities.append("vision")
 
@@ -80,7 +80,7 @@ def pull_model(args):
         fatal(f"Couldn't find requested quantization model in {args.pull_model} repo")
 
     log(f"Model file: {model_target_file}, mmproj: {mmproj_target_file or ''}")
-    log(f"Capabilities: is_vision: {"vision" in model_capabilities}, is_embedding: {"embedding" in model_capabilities}, is_reranking: {"reranking" in model_capabilities}")
+    verbose(f"Capabilities: is_vision: {"vision" in model_capabilities}, is_embedding: {"embedding" in model_capabilities}, is_reranking: {"reranking" in model_capabilities}")
     if args.vision and not mmproj_target_file:
         error("No mmproj is found on the repo, resuming installation without it")
     
@@ -89,7 +89,8 @@ def pull_model(args):
         repo_id=args.pull_model,
         filename=model_target_file,
     )
-    info(f"{model_target_file} Model has succesfully downloaded, file downloaded to: {model_file_path}")
+    verbose(f"Model path located at {model_file_path}")
+    info(f"{model_target_file} Model has succesfully downloaded")
 
     if mmproj_target_file != None:    
         log(f"Downloading file: {mmproj_target_file}")
@@ -97,7 +98,8 @@ def pull_model(args):
             repo_id=args.pull_model,
             filename=mmproj_target_file,
         )
-        info(f"mmproj for model has succesfully downloaded, file downloaded to: {mmproj_file_path}")
+        verbose(f"{model_target_file} mmproj path located at {model_file_path}")
+        info(f"{mmproj_target_file} has succesfully downloaded")
     else:
         mmproj_file_path = ""
     log(f"Creating json entry for model {model_target_file}")
@@ -120,6 +122,7 @@ def pull_model(args):
             "llama_args": ""
         },
     }
+    verbose(f"Model data content: {model_data}")
     
     toml_path = Path(f"{MODELS_DIR_PATH}", f"{model_target_file[:-5]}.toml")
     write_toml(toml_path, model_data)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+from utils.logger import *
 VENV_PYTHON = os.path.expanduser("~/.gekokuai/venv/bin/python")
 if sys.executable != VENV_PYTHON:
     if not os.path.exists(VENV_PYTHON):
@@ -9,11 +10,13 @@ if sys.executable != VENV_PYTHON:
 
 #Actual part of the code here
 import argparse
+import requests
 # Internal related modules
-from utils.vars import GEKOKUAI_VERSION
-from utils.logger import *
+from utils.globals import GEKOKUAI_VERSION, RUNTIME_SNAPSHOT
 from utils.toml_manager import *
 from utils.daemon_cleanup import *
+from utils.endpoint_response import *
+from utils.command_response import *
 from modules.doctor import *
 from modules.pull_model import *
 from modules.serve import *
@@ -25,6 +28,8 @@ from modules.remove_model import *
 from modules.stop_model import *
 from modules.logs import *
 from daemon.daemon_start import *
+
+daemon_port = RUNTIME_SNAPSHOT["server"]["port"] or 8080
 
 signal.signal(signal.SIGTERM, daemon_cleanup)
 
@@ -42,7 +47,7 @@ def main():
     remove    Remove installed model
 
     Runtime:
-    serve     Start daemon | --host | --port
+    serve     Start daemon | [model] (optional) | --host | --port
     stop      Stop daemon
     status    Show daemon status
     logs      View daemon logs
@@ -57,6 +62,7 @@ def main():
     """,
         formatter_class=argparse.RawTextHelpFormatter
     )
+    parser.add_argument("--verbose", action="store_true", help="Increase verbosity")
     subparser = parser.add_subparsers(dest="command", required=True)
 
     #info subcommand
@@ -86,9 +92,10 @@ def main():
     parser_pull.add_argument("--reranking", action="store_true", help="Indicates that the model is a reranking model")
 
     #serve subcommand
-    parser_pull = subparser.add_parser("serve", description="Run llama.cpp backend")
-    parser_pull.add_argument("--host", help="Where to host?", type=str)
-    parser_pull.add_argument("--port", help="Where from port?", type=int)
+    parser_serve = subparser.add_parser("serve", description="Run llama.cpp backend")
+    parser_serve.add_argument("serve_model", help="Optionally run a model at the same time", type=str, nargs="?")
+    parser_serve.add_argument("--host", help="Where to host?", type=str, required=False)
+    parser_serve.add_argument("--port", help="Where from port?", type=int, required=False)
 
     #status subcommand
     parser_status = subparser.add_parser("status", description="Describes the status of the currently running backend")
@@ -115,6 +122,10 @@ def main():
     parser_logs = subparser.add_parser("logs", description="tail on logs of the currently running daemon")
 
     args = parser.parse_args()
+    
+    if args.verbose:
+        info("Verbosity enabled")
+        enable_verbose()
 
     if args.command == "info":
         print("GekokuAI\n" + GEKOKUAI_VERSION + "\n")
@@ -132,7 +143,7 @@ def main():
         status(args)
 
     if args.command == "stop":
-        stop_daemon()
+        send_request("get", "stop")
 
     if args.command == "list":
         list_model(args)
@@ -141,13 +152,20 @@ def main():
         remove_model(args)
 
     if args.command == "load":
-        launch_model(args.load_model)
+        load_data = {
+            "model": args.load_model
+        }
+        send_request("post", "load", body=load_data)
     
     if args.command == "unload":
-        stop_model(args.unload_model)
+        unload_data = {
+            "model": args.unload_model
+        }
+        send_request("post", "unload", body=unload_data)
 
     if args.command == "logs":
         tail_logs()
+
 
 if __name__ == "__main__":
     main()

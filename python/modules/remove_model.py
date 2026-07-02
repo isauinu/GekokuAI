@@ -1,6 +1,6 @@
 from utils.logger import *
 from pathlib import Path
-from utils.vars import MODELS_DIR_PATH
+from utils.globals import MODELS_DIR_PATH
 from utils.toml_manager import *
 from utils.exception_handling import *
 

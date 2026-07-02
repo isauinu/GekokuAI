@@ -1,4 +1,9 @@
 from fastapi import FastAPI
+from utils.runtime_inspection import start_runtime_monitor
+from utils.daemon_cleanup import *
+from utils.globals import RUNTIME
+from utils.logger import *
+from contextlib import asynccontextmanager
 
 from api.status import router as status_router
 from api.load import router as load_router
@@ -12,7 +17,16 @@ from api.openai_api.embeddings import router as oai_embeddings_router
 from api.openai_api.responses import router as oai_responses_router
 from api.openai_api.rerank import router as rerank_router
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app):
+    info("Initializing runtime functions")
+    info(f"RUNTIME.running = {RUNTIME.running}")
+    start_runtime_monitor()
+    yield
+    info("Shutting down runtime functions")
+    RUNTIME.running = False
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(status_router)
 app.include_router(load_router)

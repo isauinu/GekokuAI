@@ -1,6 +1,6 @@
 import sys
 from utils.logger import *
-from utils.vars import RUNTIME_DAEMON_FILE_PATH
+from utils.globals import RUNTIME_SNAPSHOT_FILE_PATH
 from utils.toml_manager import *
 from pathlib import Path
 
@@ -17,6 +17,6 @@ def daemon_cleanup(signum=None, frame=None):
             "log_file": ""
         }
     }
-    write_toml(RUNTIME_DAEMON_FILE_PATH, runtime_data)
+    write_toml(RUNTIME_SNAPSHOT_FILE_PATH, runtime_data)
     success("Program has been terminated")
     sys.exit(0)
