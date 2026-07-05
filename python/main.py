@@ -27,6 +27,7 @@ from modules.list_models import *
 from modules.remove_model import *
 from modules.stop_model import *
 from modules.logs import *
+from modules.info import *
 from daemon.daemon_start import *
 
 daemon_port = RUNTIME_SNAPSHOT["server"]["port"] or 8080
@@ -42,7 +43,7 @@ def main():
     use "gekoku [sub-command] -h" to understand more about the command
 
     Model Management:
-    pull      Download model from HuggingFace | -q, --quantization | --vision | --embedding | --reranking
+    pull      Download model from HuggingFace | --vision | --embedding | --reranking
     list      List installed models
     remove    Remove installed model
 
@@ -74,19 +75,6 @@ def main():
     #pull subcommand
     parser_pull = subparser.add_parser("pull", description="Pulls a model from huggingface")
     parser_pull.add_argument("pull_model", type=str, help="The model ID from Hugging face")
-    parser_pull.add_argument("-q", "--quantization", type=str, required=False, help="Define download quantization", choices=[
-    'Q2_K', 'Q2_K_S', 'Q2_K_M', 'Q2_K_L',
-    'Q3_K_S', 'Q3_K_M', 'Q3_K_L',
-    'Q4_0', 'Q4_1', 'Q4_K', 'Q4_K_S', 'Q4_K_M',
-    'Q5_0', 'Q5_1', 'Q5_K', 'Q5_K_S', 'Q5_K_M',
-    'Q6_K',
-    'Q8_0', 'Q8_K',
-    'IQ1_S', 'IQ1_M',
-    'IQ2_XXS', 'IQ2_XS', 'IQ2_S', 'IQ2_M',
-    'IQ3_XXS', 'IQ3_XS', 'IQ3_S', 'IQ3_M',
-    'IQ4_NL', 'IQ4_XS',
-    'FP16', 'BF16', 'FP32'
-    ])
     parser_pull.add_argument("--embedding", action="store_true", help="Indicates that the model is an embedding model")
     parser_pull.add_argument("--vision", action="store_true", help="Indicates that the model is a vision model")
     parser_pull.add_argument("--reranking", action="store_true", help="Indicates that the model is a reranking model")
@@ -128,7 +116,7 @@ def main():
         enable_verbose()
 
     if args.command == "info":
-        print("GekokuAI\n" + GEKOKUAI_VERSION + "\n")
+        program_info()
 
     if args.command == "doctor":
         start_doctor()

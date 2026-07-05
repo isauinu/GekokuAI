@@ -16,6 +16,10 @@ def list_model(args):
         model_repo_info = model_info["metadata"]["repo"]
         models_repo_list.append(model_repo_info)
     
+    if not models_list and models_repo_list:
+        print("No downloaded models available :(\n")
+        return
+    
     max_width_model_id = max(len(item) for item in models_list) + 5
     max_width_model_repo = max(len(item) for item in models_repo_list) + 5
     max_width_capability = 20

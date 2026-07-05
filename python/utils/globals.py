@@ -7,6 +7,7 @@ except ImportError:
 from utils.toml_manager import *
 from utils.logger import *
 from utils.runtime import Runtime
+from utils.downloader import DownloadMetadata
 
 HOME = os.getenv('HOME') or os.path.expanduser('~')
 
@@ -58,9 +59,13 @@ else:
     GEKOKUAI_METADATA_DATA = read_toml(GEKOKUAI_METADATA_PATH)
 
 GEKOKUAI_VERSION = GEKOKUAI_METADATA_DATA["metadata"]["version"]
+GEKOKUAI_BUILD_RELEASE_DATE = GEKOKUAI_METADATA_DATA["metadata"]["release_date"]
+GEKOKUAI_LICENSE = GEKOKUAI_METADATA_DATA["metadata"]["license"]
 
 LOG_DIR_PATH = Path(f"{GEKOKU_HOME}", "logs")
 
 API_PREFIX = "/api/v1"
 
 RUNTIME = Runtime()
+
+DOWNLOAD = DownloadMetadata()

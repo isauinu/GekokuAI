@@ -31,7 +31,7 @@ OPTIONAL_CPU_FLAGS=("avx512f" "avx512bw" "avx512vl" "avx512vnni" "amx_int8" "amx
 SUPPORTED_ROCM_ARCH=("gfx906" "gfx908" "gfx90a" "gfx1030" "gfx1100" "gfx1101" "gfx1102")
 #Update these frequently depending by how many packages are needed
 REQUIRED_PIP_PACKAGES=("pip" "setuptools" "wheel" "huggingface_hub" "tomli" "tomli-w" "fastapi[standard]" "uvicorn[standard]" "requests" "psutil")
-REQUIRED_DEPENDENCIES=("git" "cmake" "make" "gcc" "g++" "python3" "curl" "tar" "pip" "zip" "pkg-config" "node" "npm")
+REQUIRED_DEPENDENCIES=("git" "cmake" "make" "gcc" "g++" "python3" "curl" "tar" "pip" "zip" "pkg-config" "node" "npm" "tqdm" "alive-progress")
 declare -A APT_DEPS=(
     ["git"]="git" 
     ["cmake"]="cmake" 

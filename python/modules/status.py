@@ -35,11 +35,13 @@ def status(args):
     print(f"{"Log file":<{width_span}}|  {str(status_data["log_file"])}")
     
     print()
-
+    try:
+        max_key_width = max(len(item) for item in status_data["models"].keys()) + 5
+    except Exception:
+        max_key_width = 20
+    max_value_width = 15
+    print(f"{"Loaded model(s)":<{max_key_width}}{"PID":<{max_value_width}}{"Port":<{max_value_width}}")
+    print(f"{"":-^{max_key_width + (max_value_width + max_value_width - 10) + 5}}")
     for key, value in status_data["models"].items():
-        key_center_span = len(key) + 10
-        value_width_span = round(key_center_span / 2)
-        print(f"{key:-^{key_center_span}}")
-        print(f"{"PID":<{value_width_span}}|  {str(value["pid"])}")
-        print(f"{"Port":<{value_width_span}}|  {str(value["port"])}")
-        print()
+        print(f"{key:<{max_key_width}}{value["pid"]:<{max_value_width}}{value["port"]:<{max_value_width}}")
+    print()

@@ -6,7 +6,7 @@ def check_model_exists(model):
     model_id = None
     for file in MODELS_DIR_PATH.iterdir():
         if f"{model}.toml" == file.name:
-            log(f"Found model: {file.stem}")
+            verbose(f"Found model: {file.stem}")
             model_id = file
     if model_id:
         return True
