@@ -31,3 +31,6 @@ and then refresh your shell environment, example
 - gekoku load
 - gekoku unload
 - gekoku logs   
+
+## License
+This project is licensed under the "MIT License". See the `license` file for further details
