@@ -71,8 +71,7 @@ def start_daemon(args):
     }
     verbose(f"Runtime data content: {runtime_data}")
     if not RUNTIME_DIR_PATH.is_dir():
-        warn("Runtime folder to store server information doesn't exist, creating one")
-        RUNTIME_DIR_PATH.mkdir(parents=True, exist_ok=True)
+        error("Runtime folder to store server information doesn't exist")
     toml_path = Path(RUNTIME_DIR_PATH, "runtime.toml")
     write_toml(toml_path, runtime_data)
     log("Successfully created runtime data")

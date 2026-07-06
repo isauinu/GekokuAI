@@ -1,6 +1,6 @@
 # GekokuAI
 Status:
-v0.4-Beta
+v0.4
 
 a self-written local LLM Launcher directly from your CLI alone.
 currently supports all linux distro that uses APT, pacman, and DNF as its package manager

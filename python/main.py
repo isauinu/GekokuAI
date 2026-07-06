@@ -70,7 +70,7 @@ def main():
     parser_info = subparser.add_parser("info", description="Displays the current GekokuAI Information")
 
     #doctor subcommand
-    parser_doctor = subparser.add_parser("doctor", description="Displays the current state of the GekokuAI")
+    parser_doctor = subparser.add_parser("doctor", description="Performs tests and validation of the current installation of GekokuAI")
 
     #pull subcommand
     parser_pull = subparser.add_parser("pull", description="Pulls a model from huggingface")
@@ -119,7 +119,7 @@ def main():
         program_info()
 
     if args.command == "doctor":
-        start_doctor()
+        doctor_normal(args)
 
     if args.command == "pull":
         pull_model(args)

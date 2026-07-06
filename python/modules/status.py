@@ -3,6 +3,7 @@ from utils.globals import GEKOKUAI_VERSION, RUNTIME_SNAPSHOT
 from utils.logger import *
 from utils.exception_handling import *
 import requests
+from pathlib import Path
 
 def status(args):
     try:
@@ -32,7 +33,7 @@ def status(args):
     print(f"{"Loaded models":<{width_span}}|  {len(status_data["models"])}")
     print(f"{"Host":<{width_span}}|  {str(status_data["host"])}")
     print(f"{"Port":<{width_span}}|  {str(status_data["port"])}")
-    print(f"{"Log file":<{width_span}}|  {str(status_data["log_file"])}")
+    print(f"{"Log file":<{width_span}}|  {str(Path(status_data["log_file"]).name)}")
     
     print()
     try:

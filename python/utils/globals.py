@@ -10,39 +10,64 @@ from utils.runtime import Runtime
 from utils.downloader import DownloadMetadata
 
 HOME = os.getenv('HOME') or os.path.expanduser('~')
+GEKOKU_HOME = Path(HOME, ".gekokuai")
 
 GEKOKU_PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-CONFIG_PATH = Path(HOME, ".gekokuai", "config", "config.toml")
-CONFIG_DATA = read_toml(CONFIG_PATH)
+CONFIG_PATH = Path(GEKOKU_HOME, "config", "config.toml")
+try:
+    CONFIG_DATA = read_toml(CONFIG_PATH)
+except Exception as e:
+    error("Cannot read configuration data")
+    CONFIG_DATA = {
+        "metadata": {
+            "CPU_BACKEND": "",
+            "GPU_BACKEND": "GPU"
+        },
+        "server": {
+            "host": "127.0.0.1",
+            "port": 8080
+        },
+        "location": {
+            "workspace": f"{Path(Path.home(), ".gekokuai")}",
+            "models_path": f"{Path(Path.home(), ".gekokuai", "models")}",
+            "venv_path": f"{Path(Path.home(), ".gekokuai", "venv")}",
+            "log_path": f"{Path(Path.home(), ".gekokuai", "logs")}",
+            "tmp_path": f"{Path(Path.home(), ".gekokuai", "tmp")}",
+        },
+        "llama_cpp": {
+            "llama_cpp_path": f"{Path(Path.home(), ".gekokuai" "llama.cpp")}",
+        },
+        "security": {
+            "host_managed_endpoints": True,
+            "allowed_hosts": ["127.0.0.1", "::1"]
+        }
+    }
 
-GEKOKU_HOME = CONFIG_DATA["location"]["workspace"]
 
 MODELS_DIR_PATH = Path(f"{GEKOKU_HOME}", "models")
 
 RUNTIME_DIR_PATH = Path(f"{GEKOKU_HOME}", "runtime")
 RUNTIME_SNAPSHOT_FILE_PATH = Path(f"{GEKOKU_HOME}", "runtime", "runtime.toml")
 if not RUNTIME_DIR_PATH.is_dir():
-    warn("Runtime folder to store server information doesn't exist, creating one")
-    RUNTIME_DIR_PATH.mkdir(parents=True, exist_ok=True)
-
-if not RUNTIME_SNAPSHOT_FILE_PATH.is_file():
-    warn("Runtime file not found, creating a default inactive runtime information")
-    runtime_data = {
-        "server": {
-            "running": False,
-            "pid": 0,
-            "models": [],
-            "host": "",
-            "port": "",
-            "log_file": ""
-        }
-    }
-    write_toml(RUNTIME_SNAPSHOT_FILE_PATH, runtime_data)
+    warn("Runtime folder to store server information doesn't exist")
 
 class RuntimeSnapshot:
         def __getitem__(self, key):
-            data = read_toml(RUNTIME_SNAPSHOT_FILE_PATH)
+            try:
+                data = read_toml(RUNTIME_SNAPSHOT_FILE_PATH)
+            except Exception as e:
+                error("Runtime snapshot cannot be loaded!")
+                data = {
+                "server": {
+                    "running": False,
+                    "pid": 0,
+                    "models": [],
+                    "host": "",
+                    "port": "",
+                    "log_file": ""
+                    }
+                }
             return data[key]
 RUNTIME_SNAPSHOT = RuntimeSnapshot()
 
@@ -52,7 +77,9 @@ if not GEKOKUAI_METADATA_PATH.is_file():
     error("No metadata file is detected on the expected path")
     GEKOKUAI_METADATA_DATA = {
         "metadata": {
-            "version": "Unknown"
+            "version": "Unknown",
+            "release_date": "Unknown",
+            "license": "MIT",
         }
     }
 else:
@@ -69,3 +96,5 @@ API_PREFIX = "/api/v1"
 RUNTIME = Runtime()
 
 DOWNLOAD = DownloadMetadata()
+
+VENV_PYTHON = f"{CONFIG_DATA["location"]["venv_path"]}/bin/python"

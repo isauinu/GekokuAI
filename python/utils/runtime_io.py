@@ -24,8 +24,7 @@ def runtime_save(model = None, pid = None, port = None):
             "port": port
         }
     if not RUNTIME_DIR_PATH.is_dir():
-        warn("Runtime folder to store server information doesn't exist, creating one")
-        RUNTIME_DIR_PATH.mkdir(parents=True, exist_ok=True)
+        error("Runtime folder to store server information doesn't exist")
     write_toml(RUNTIME_SNAPSHOT_FILE_PATH, runtime_data)
 
 def runtime_load():
