@@ -1,0 +1,54 @@
+---
+title: 'Quick start'
+description: 'A quick ignition guide on how to use GekokuAI'
+---
+
+# Quick start
+
+Now that you've installed GekokuAI successfully, here are some commands to get you started!
+
+## Download a model
+
+To download an LLM Model, head over to the [Hugging Face](https://huggingface.co/) and select a valid repository that contains GGUF model files.
+Example:
+```bash
+gekoku pull unsloth/gemma-4-E4B-it-GGUF
+```
+
+You'll be able to select which quantized version of the model that you want, and will be prompted to proceed with the installation along side the file size information.
+
+## List of downloaded models
+
+To view currently installed models in the device, type the following command
+
+```bash
+gekoku list
+```
+
+The output will show a neatly structured table of all registered and installed models, along side informations such as the original repository and the model's capability
+
+## Start the daemon
+
+Before running the models you installed, start the daemon server to be able to send and receive requests from other libraries
+
+```bash
+gekoku serve
+```
+
+This will start a daemon based on the chosen host and port in `config.toml` (By default the host is `127.0.0.1` and the port is `8080`) 
+
+<Tip>
+    You can also load a model along side the daemon by adding the ID of the model as an argument: `gekoku serve gemma-4-E4B-it-GGUF`
+</Tip>
+
+## Stopping the daemon
+
+To stop the currently running daemon type the following command
+
+```bash
+gekoku stop
+```
+This will terminate both the daemon and alongside currently running models
+
+
+For more information for every commands, visit the next page that discussed about each of the available command's functions

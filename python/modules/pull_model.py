@@ -122,6 +122,10 @@ def pull_model(args):
         error("An unknown error has occured!")
         fatal(f"Error information: {e}")
     
+    if not model_files:
+        error(f"No valid GGUF models are available at {args.pull_model}, ensure the repository you're selecting has an existing quantization model")
+        fatal("Aborting...")
+    
     model_capabilities = [
         name for name, flag in[
             ("vision", args.vision),
@@ -160,6 +164,7 @@ def pull_model(args):
             bit_size = bit_match.group() if bit_match else "16"
             key = f"{bit_size}-bit"
             downloadable_mmproj.setdefault(key, {}).setdefault(quant_type, []).append(f)
+
 
     verbose(f"Downloadable models: {downloadable_models}")
     verbose(f"Downloadable mmproj: {downloadable_mmproj}")

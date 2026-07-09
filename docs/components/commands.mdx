@@ -1,0 +1,156 @@
+---
+title: 'Commands'
+description: 'List of commands available in GekokuAI and their purposes'
+---
+
+# Commands
+
+A brief overview of each and every commands that's currently available
+
+## Model managment
+
+Below are the lists of commands associated with Model Managment
+
+### pull
+
+```bash
+gekoku pull <repository>
+```
+
+The command will download models from [Hugging Face](https://huggingface.co/) based on the specified repository that contains a valid GGUF model
+
+It will attempt to parse `.gguf` files and `.mmproj` files (if `--vision` argument is specified) and you will be able to select which quantized models you want to download. 
+Once you have selected the quantization it will prompt you whether to continue with installation and afterward begins the installation. 
+after the installation is finished, the model will be registered inside gekoku
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| `pull_model` | `string` | Which repository to select and pull the model form
+| `--vision` | `boolean` | Determines that the installed model has vision capability (includes the `mmproj` in download)
+| `--embedding` | `boolean` | Determines that the installed model is an embedding model
+| `--reranking` | `boolean` | Determines that the installed model is a reranking model
+
+### list
+
+```bash
+gekoku list
+```
+
+This will list all of the available models that's currently downloaded in a structured form. 
+It also displays other informations such as the model's original repository,
+as well as the model's capability
+
+### remove
+
+```bash
+gekoku remove <model-id>
+```
+
+The command will unregister the selected model as well as removing the cache from Huggingface's folder. 
+Additionally if there's no model files inside the cache folder it will remove the repository folder associated with the model entirely
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| `remove_model` | `string` | Which model to be unregistered and removed
+
+
+## Runtime
+
+Below are the lists of commands associated with Runtime
+
+### serve
+
+```bash
+gekoku serve
+```
+
+The command will start the daemon that will listen for any incoming requests as well as sending responses to the desired endpoint. it will 
+
+Additionally, you can start a model along side the daemon by adding the model's ID as the argument. For example
+
+```bash
+gekoku serve gemma-4-E4B-it-GGUF
+```
+
+<Tip>
+    You can check what's the Model ID by doing `gekoku list`
+</Tip>
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| `serve_model` | `string` | Which model to be served along side the daemon
+
+### status
+
+```bash
+gekoku status
+```
+
+The command will display the information of the currently running daemon along side the information for loaded models in the current session
+
+### stop
+
+```bash
+gekoku stop
+```
+
+This will stop the daemon, along side any currently running models
+
+### logs
+
+```bash
+gekoku logs
+```
+
+Follows the logs of the currently running daemon to diagnose and check for activities of the daemon
+
+
+### Model loading
+
+Below are the lists of commands associated with Model Loading
+
+### load
+
+```bash
+gekoku load <model-id>
+```
+
+Loads the selected model based on the ID and runs them, the command only works when a daemon is running in the background
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| `load_model` | `string` | Which model to load to the daemon
+
+### unload
+
+```bash
+gekoku unload <model-id>
+```
+
+Unloads the selected model based on the ID, and terminating the server of the model safely
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| `unload_model` | `string` | Which model to unload from the daemon
+
+
+## Utilities
+
+Below are the lists of commands associated with Utilities
+
+### info
+
+```bash
+gekoku info
+```
+
+Displays the installed GekokuAI and all of its metadata
+
+### doctor
+
+```bash
+gekoku doctor
+```
+
+The command will perform health checks of the current installation, 
+this is useful to confirm that the instance is working properly or to see what went wrong with the current installation when you encountered a problem.

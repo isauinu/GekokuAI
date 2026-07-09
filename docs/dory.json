@@ -1,0 +1,78 @@
+{
+  "name": "GekokuAI",
+  "url": "https://github.com/isauinu/GekokuAI",
+  "description": "A local LLM orchestration tool",
+  "favicon": "./favicon.svg",
+  "colors": {
+    "primary": "#F63354",
+    "light": "#F63354",
+    "dark": "#F63354",
+    "background": "oklch(0.16 0.035 255)",
+    "surface": "oklch(0.20 0.04 255)",
+    "surfaceElevated": "oklch(0.24 0.05 255)",
+    "foreground": "oklch(0.97 0.005 250)",
+    "mutedForeground": "oklch(0.72 0.02 250)",
+    "border": "oklch(0.7 0.08 250 / 14%)"
+  },
+  "theme": {
+    "mode": "system"
+  },
+  "fonts": {
+    "family": "Cairo",
+    "source": "https://fonts.gstatic.com/s/cairo/v31/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hNI-a1PiLA.woff2",
+    "format": "woff2",
+    "heading": {
+      "family": "Open Sans",
+      "source": "https://fonts.gstatic.com/s/opensans/v44/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVI.woff2",
+      "format": "woff2"
+    },
+    "mono": {
+      "family": "Ubuntu Mono",
+      "source": "https://fonts.gstatic.com/s/ubuntumono/v19/KFOjCneDtsqEr0keqCMhbCc6CsQ.woff2",
+      "format": "woff2"
+    }
+  },
+  "logo": {
+    "light": "./logo/logo.svg",
+    "dark": "./logo/logo.svg"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group":"Getting Started",
+            "pages": [
+              "introduction",
+              "getting-started/installation",
+              "getting-started/quick-start"
+            ]
+          },
+          {
+            "group":"Components",
+            "pages": [
+              "components/commands",
+              "components/api"
+            ]
+          },
+          {
+            "group":"Configuration",
+            "pages": [
+              "configuration/config.toml",
+              "configuration/models"
+            ]
+          },
+          {
+            "group":"Development",
+            "pages": [
+              "development/architecture",
+              "development/file-structure",
+              "development/building"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

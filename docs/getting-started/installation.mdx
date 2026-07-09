@@ -1,0 +1,75 @@
+---
+title: 'Installation'
+description: 'Install GekokuAI and start using it'
+---
+
+# Installation
+
+GekokuAI currently supports Linux distributions using **APT**, **Pacman**, & **DNF** as their package manager. if your distribution uses a different package manager, you can install the required dependencies manually and continue with the installation guide as usual
+
+<AccordionGroup>
+  <Accordion title="Install dependencies manually" icon="hammer">
+    Install the following dependencies in your preferred package manager:
+
+    * **Build tools:** `cmake`, `make`, `gcc`, `g++` (or `gcc+c++`), `pkg-config`
+    * **Runtimes:** `python3` `node` (or `npm`)
+    * **Utilities:** `git`, `curl`, `tar`, `zip`, `pip` (or `python3-pip`)
+
+    After all dependencies has been installed, proceed to the next step of the installation
+  </Accordion>
+</AccordionGroup>
+
+## Clone the repository
+
+First, clone the repository to prepare the Installation
+
+```bash Linux
+git clone https://github.com/isauinu/GekokuAI/
+cd GekokuAI
+```
+
+## Launch the installer
+
+Make `setup.sh` executable and run the installer
+
+```bash Linux
+chmod +x setup.sh
+./setup.sh
+```
+
+The installer will automatically detect your linux distribution's package manager, it will then detect what dependencies are missing required for the setup and will then give you a prompt to proceed with installing them
+
+Once the installer downloads all of the dependencies, it will then clone a forked version of llama.cpp (`https://github.com/TheTom/llama-cpp-turboquant`) and compiles them on device
+
+After compiling and building llama.cpp the installer will copy all of its contents to `$HOME/.gekokuai` and finish installation
+
+## Add GekokuAI to your PATH
+
+By default, GekokuAI does not embed itself into your system's `PATH`. to use the `gekoku` command from any directory, you must **manually** add the installation directory to your `PATH` based on your preferred shell.
+
+<CodeGroup>
+    ```bash
+    echo 'export PATH="$HOME/.gekokuai/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+    ```
+    ```zsh
+    echo 'export PATH="$HOME/.gekokuai/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+    ```
+    ```fish
+    fish_add_path $HOME/.gekokuai/bin:$PATH
+    ```
+</CodeGroup>
+
+<Note>
+    If you use an alternative shell, please consult to your shell's documentation to add the installation directory to your `PATH`
+</Note>
+
+
+## Confirm your installation
+
+Once you follow all of the steps, you can verify the installation by typing the following command
+
+```bash Linux
+gekoku info
+```
+
+If it correctly shows the information of the running installation. Congratulations, you can now use GekokuAI!
