@@ -38,6 +38,10 @@ jobs:
       - name: Verify Dory installation
         run: dory version
 
+      - name: Install build dependencies
+        working-directory: docs
+        run: npm install terser
+
       - name: Build documentation
         working-directory: docs
         run: dory build
