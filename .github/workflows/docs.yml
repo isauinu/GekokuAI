@@ -24,27 +24,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout GekokuAI
         uses: actions/checkout@v4
+
+      - name: Checkout Dory
+        uses: actions/checkout@v4
+        with:
+          # Replace this with your fork if you maintain your own fixes
+          repository: clidey/dory
+          ref: main
+          path: dory
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: dory/package-lock.json
 
-      - name: Install Dory
-        run: npm install -g @clidey/dory
+      - name: Replace example docs
+        run: |
+          rm -rf dory/docs
+          mkdir -p dory/docs
+          cp -R docs/. dory/docs/
 
-      - name: Verify Dory installation
-        run: dory version
+      - name: Install dependencies
+        working-directory: dory
+        run: npm install
 
-      - name: Install build dependencies
-        working-directory: docs
+      - name: Install terser
+        working-directory: dory
         run: npm install terser
 
       - name: Build documentation
-        working-directory: docs
-        run: dory build
+        working-directory: dory
+        run: npm run build:docs
+
+      - name: Build embed files
+        working-directory: dory
+        run: npm run build:embed
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -52,7 +70,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/dist
+          path: dory/dist
 
   deploy:
     needs: build
