@@ -30,7 +30,6 @@ jobs:
       - name: Checkout Dory
         uses: actions/checkout@v4
         with:
-          # Replace this with your fork if you maintain your own fixes
           repository: clidey/dory
           ref: main
           path: dory
@@ -39,8 +38,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: dory/package-lock.json
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: Replace example docs
         run: |
@@ -50,19 +52,19 @@ jobs:
 
       - name: Install dependencies
         working-directory: dory
-        run: npm install
+        run: pnpm install
 
       - name: Install terser
         working-directory: dory
-        run: npm install terser
+        run: pnpm add -D terser
 
       - name: Build documentation
         working-directory: dory
-        run: npm run build:docs
+        run: pnpm run build:docs
 
       - name: Build embed files
         working-directory: dory
-        run: npm run build:embed
+        run: pnpm run build:embed
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
