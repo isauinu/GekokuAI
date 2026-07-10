@@ -8,4 +8,40 @@ description: 'How to configure each installed models and tweak them'
 Configuring models and changing how they run can be done the same way as changing `config.toml`. 
 However, to edit your preffered models, they're installed located in `$HOME/.gekokuai/models` in which each models are seperated in their own `.toml` file and you can edit them with your preffered text editor like `nano`
 
-(TODO)
+## Example configuration
+
+The following is an example of a model's configuration. the final file path for the configuration will be `$HOME/.gekokuai/models/gemma-4-E2B.Q4_K_M.toml`
+
+```bash
+id = "gemma-4-E2B.Q4_K_M"
+
+[metadata]
+repo = "mradermacher/gemma-4-E2B-GGUF"
+commit_hash = "3762686d74ff8db6c98f8d3c389f56fbdf994d5a"
+file = "gemma-4-E2B.Q4_K_M.gguf"
+path = "/home/auinu/.cache/huggingface/hub/models--mradermacher--gemma-4-E2B-GGUF/snapshots/3762686d74ff8db6c98f8d3c389f56fbdf994d5a/gemma-4-E2B.Q4_K_M.gguf"
+mmproj_path = "/home/auinu/.cache/huggingface/hub/models--mradermacher--gemma-4-E2B-GGUF/snapshots/3762686d74ff8db6c98f8d3c389f56fbdf994d5a/gemma-4-E2B.mmproj-Q8_0.gguf"
+created = 1783327192
+capabilities = [
+    "vision",
+]
+
+[arguments]
+llama_args = ""
+```
+
+## Model's arguments
+
+You can change how the model runs by changing the [llama.cpp](https://llama-cpp.com/) arguments of the model inside the `llama_args` key. it uses the llama.cpp model arguments and you can visit the documentation for it to check for the arguments
+Example:
+
+```bash
+[arguments]
+llama_args = "-c 8192 -ctk q8_0 -ctv q8_0 -fa on"
+```
+
+The above example will use the arguments for the next use with different context size, KV cache, and flash attention and will be persistent on every session
+
+<Note>
+    Make sure to correctly use valid llama.cpp arguments. otherwise the model won't be able to run and will yield an error when trying to start it
+</Note>

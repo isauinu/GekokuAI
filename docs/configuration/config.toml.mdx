@@ -5,7 +5,91 @@ description: 'How to configure GekokuAI and its quirks'
 
 # Config.toml
 
-`config.toml` is used for changing how GekokuAI runs and how to be used. 
+`config.toml` stores global configuration for your GekokuAI installation. the file is created after installation and can be edited to customize how the daemon and models behave. 
 The file is typically located on `$HOME/.gekokuai/config/config.toml` in which you can use your preffered text editor like `nano` to edit them
 
-(TODO)
+## Example configuration
+
+The following is an example of a configuration for `config.toml`
+
+```bash
+# GekokuAI Configuration
+[metadata]
+CPU_BACKEND = "AVX2"
+GPU_BACKEND = "CUDA"
+
+[server]
+host = "127.0.0.1"
+port = 8080
+
+[location]
+workspace = "/home/pc/.gekokuai"
+models_path = "/home/pc/.gekokuai/models"
+venv_path = "/home/pc/.gekokuai/venv"
+log_path = "/home/pc/.gekokuai/logs"
+tmp_path = "/home/pc/.gekokuai/tmp"
+
+[llama_cpp]
+llama_cpp_path = "/home/pc/.gekokuai/llama.cpp"
+
+[security]
+host_managed_endpoints = false
+allowed_hosts = ["127.0.0.1", "::1"]
+```
+
+The above example is the determining value for configuring GekokuAI.
+Below are configuration sections that can be altered
+
+## Server
+
+This section describes how the daemon would run in the background, specifically to customize which host to determine and port to occupy.
+
+### host
+
+This key allows the change for which host to broadcast the daemon to, whether to expose directly from local machine or local network. This key defaults to `"127.0.0.1"` as a string.
+Example:
+
+```bash
+host = "0.0.0.0"
+```
+The above example exposes the daemon and broadcast it to the local network
+
+### port
+
+Specifies which port to use specifically, by default it occupies port `8080`.
+Example
+```bash
+port = 8000
+```
+This will initiate the daemon in port `8000` the next time you run it
+
+<Warning>
+    Be sure to specify the port as an `integer` otherwise GekokuAI wouldn't be able to start the daemon correctly
+</Warning>
+
+## Security
+
+This section determines API endpoint availability, this ensures whether the secured API endpoints of the daemon is accesible by you only or from others.
+
+This is useful to prevent unathorized access to secured endpoints if the daemon is exposed to the local network.
+
+Below are the lists of secured endpoints:
+
+- `/v1/api/load`
+- `/v1/api/unload`
+- `/v1/api/stop`
+
+By default this security feature is set to `false` as a boolean
+
+### host security
+
+you can change `host_managed_endpoints` to `true` to activate this security feature
+
+afterwards set which port is allowed to access the secured endpoints by adding more entries to the `allowed_hosts` key.
+Example:
+
+```bash
+allowed_hosts = ["192.168.0.105", "127.0.0.1"]
+```
+
+This allows host `192.168.0.105` to access the secured daemon API endpoints and can safely execute methods like shutting down the daemon
